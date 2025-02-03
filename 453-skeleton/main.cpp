@@ -28,7 +28,7 @@ public:
 	//virtual void mouseButtonCallback(int button, int action, int mods) {}
 	//virtual void cursorPosCallback(double xpos, double ypos) {}
 	//virtual void scrollCallback(double xoffset, double yoffset) {}
-	//virtual void windowSizeCallback(int width, int height) { CallbackInterface::windowSizeCallback(width, height);/*Should be called*/ }
+	virtual void windowSizeCallback(int width, int height) { CallbackInterface::windowSizeCallback(width, height);/*Should be called*/ }
 
 private:
 	ShaderProgram& shader;
@@ -72,15 +72,15 @@ int main() {
 	GPU_Geometry gpuGeom; // Wrapper managing VAO and VBOs, in a TIGHTLY packed format
 	//https://www.khronos.org/opengl/wiki/Vertex_Specification_Best_Practices#Attribute_sizes
 
-	// vertices
-	cpuGeom.verts.push_back(glm::vec3(-0.5f, -0.5f, 0.f)); // Lower Left
-	cpuGeom.verts.push_back(glm::vec3(0.5f, -0.5f, 0.f)); // Lower Right
-	cpuGeom.verts.push_back(glm::vec3(0.f, 0.5f, 0.f)); // Upper
+	// vertices (initial triangle)
+	cpuGeom.verts.push_back(glm::vec3(-0.5f, -float(sqrt(3))/4, 0.f)); // Lower Left
+	cpuGeom.verts.push_back(glm::vec3(0.5f, -float(sqrt(3)) / 4, 0.f)); // Lower Right
+	cpuGeom.verts.push_back(glm::vec3(0.f, float(sqrt(3)) / 4, 0.f)); // Upper
 
 	// colours (these should be in linear space)
-	cpuGeom.cols.push_back(glm::vec3(1.f, 0.f, 0.f)); // Red
-	cpuGeom.cols.push_back(glm::vec3(0.f, 1.f, 0.f)); // Green
-	cpuGeom.cols.push_back(glm::vec3(0.f, 0.f, 1.f)); // Blue
+	cpuGeom.cols.push_back(glm::vec3(0.4f, 0.4f, 1.f)); 
+	cpuGeom.cols.push_back(glm::vec3(0.4f, 0.4f, 1.f));
+	cpuGeom.cols.push_back(glm::vec3(0.4f, 0.4f, 1.f));
 
 	gpuGeom.setVerts(cpuGeom.verts); // Upload vertex position geometry to VBO
 	gpuGeom.setCols(cpuGeom.cols); // Upload vertex colour attribute to VBO
