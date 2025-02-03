@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\sofie\cppProjects\CPSC-453-Assignment-1-Boilerplate\453-skeleton\AssetPath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\sofie\cppProjects\CPSC-453-Assignment-1-Boilerplate\453-skeleton\GLDebug.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\sofie\cppProjects\CPSC-453-Assignment-1-Boilerplate\453-skeleton\GLHandles.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\sofie\cppProjects\CPSC-453-Assignment-1-Boilerplate\453-skeleton\Geometry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\sofie\cppProjects\CPSC-453-Assignment-1-Boilerplate\453-skeleton\Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\sofie\cppProjects\CPSC-453-Assignment-1-Boilerplate\453-skeleton\ShaderProgram.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\sofie\cppProjects\CPSC-453-Assignment-1-Boilerplate\453-skeleton\Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\sofie\cppProjects\CPSC-453-Assignment-1-Boilerplate\453-skeleton\VertexArray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\sofie\cppProjects\CPSC-453-Assignment-1-Boilerplate\453-skeleton\VertexBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\sofie\cppProjects\CPSC-453-Assignment-1-Boilerplate\453-skeleton\Window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\sofie\cppProjects\CPSC-453-Assignment-1-Boilerplate\453-skeleton\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\sofie\cppProjects\CPSC-453-Assignment-1-Boilerplate\453-skeleton\AssetPath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\sofie\cppProjects\CPSC-453-Assignment-1-Boilerplate\453-skeleton\GLDebug.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\sofie\cppProjects\CPSC-453-Assignment-1-Boilerplate\453-skeleton\GLHandles.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\sofie\cppProjects\CPSC-453-Assignment-1-Boilerplate\453-skeleton\Geometry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\sofie\cppProjects\CPSC-453-Assignment-1-Boilerplate\453-skeleton\Log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\sofie\cppProjects\CPSC-453-Assignment-1-Boilerplate\453-skeleton\Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\sofie\cppProjects\CPSC-453-Assignment-1-Boilerplate\453-skeleton\ShaderProgram.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\sofie\cppProjects\CPSC-453-Assignment-1-Boilerplate\453-skeleton\Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\sofie\cppProjects\CPSC-453-Assignment-1-Boilerplate\453-skeleton\VertexArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\sofie\cppProjects\CPSC-453-Assignment-1-Boilerplate\453-skeleton\VertexBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\sofie\cppProjects\CPSC-453-Assignment-1-Boilerplate\453-skeleton\Window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\sofie\cppProjects\CPSC-453-Assignment-1-Boilerplate\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{C6ED631B-5DB1-3CAA-90D7-16D5E48CA099}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{B4175FCB-957A-3920-9A28-7705B2D16B40}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
