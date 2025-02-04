@@ -49,6 +49,12 @@ public:
 			iteration++;
 			std::cout << "Iteration num: " << iteration << std::endl;
 		}
+		if (key == GLFW_KEY_LEFT && action == GLFW_PRESS) {
+			if (iteration > 0) {
+				iteration--;
+			}
+			std::cout << "Iteration num: " << iteration << std::endl;
+		}
 	}
 private:
 	int& iteration;
