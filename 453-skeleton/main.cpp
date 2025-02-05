@@ -33,6 +33,21 @@ public:
 	}
 };
 
+class LevyCCurve {
+public:
+	std::vector<float> A;
+	std::vector<float> B;
+
+	std::vector<float> colour;
+
+	LevyCCurve(std::vector<float> x, std::vector<float> y, std::vector<float> initColour) {
+		A = x;
+		B = y;
+
+		colour = initColour;
+	}
+};
+
 
 void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration, bool setColour, CPU_Geometry& cpuGeom);
 //void sierpinskiTriangleRender(sierpinskiTriangle triangle, int iteration, int sceneNumber, Window& window, ShaderProgram& shader, GPU_Geometry& gpuGeom, CPU_Geometry& cpuGeom);
@@ -137,7 +152,15 @@ int main() {
 
 	SierpinskiTriangle triangle(ver1, ver2, ver3, colourInit);
 	bool setColour = false;
-	
+
+	// vertices (initial line of Levy C Curve)
+	std::vector<float> ver4 = { -0.5f, 0.f };
+	std::vector<float> ver5 = { 0.5f, 0.f };
+
+	std::vector<float> colourLevyInit = { 0.f, 1.f, 0.f };
+	LevyCCurve curve(ver4, ver5, colourLevyInit);
+
+
 
 	// RENDER LOOP
 	while (!window.shouldClose()) {
@@ -158,6 +181,24 @@ int main() {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear render screen (all zero) and depth (all max depth)
 			glDrawArrays(GL_TRIANGLES, 0, cpuGeom.verts.size()); // Render primitives
 			glDisable(GL_FRAMEBUFFER_SRGB); // disable sRGB for things like imgui (if used)
+		}
+
+		else if (sceneNumber == 1) {
+			cpuGeom.verts.push_back(glm::vec3(curve.A.at(0), curve.A.at(1), 0.0f));
+			cpuGeom.verts.push_back(glm::vec3(curve.B.at(0), curve.B.at(1), 0.0f));
+		
+			cpuGeom.cols.push_back(glm::vec3(curve.colour.at(0), curve.colour.at(1), curve.colour.at(2)));
+			cpuGeom.cols.push_back(glm::vec3(curve.colour.at(0), curve.colour.at(1), curve.colour.at(2)));
+
+			gpuGeom.setVerts(cpuGeom.verts); // Upload vertex position geometry to VBO
+			gpuGeom.setCols(cpuGeom.cols); // Upload vertex colour attribute to VBO
+
+			glEnable(GL_FRAMEBUFFER_SRGB); // Expect Colour to be encoded in sRGB standard (as opposed to RGB) 
+			// https://www.viewsonic.com/library/creative-work/srgb-vs-adobe-rgb-which-one-to-use/
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear render screen (all zero) and depth (all max depth)
+			glDrawArrays(GL_LINES, 0, cpuGeom.verts.size()); // Render primitives
+			glDisable(GL_FRAMEBUFFER_SRGB); // disable sRGB for things like imgui (if used)
+
 		}
 		
 
