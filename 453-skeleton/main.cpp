@@ -95,8 +95,8 @@ int main() {
 	std::vector<float> B = { 0.5f, -float(sqrt(3)) / 4 };
 	std::vector<float> C = { 0.f, float(sqrt(3)) / 4 };
 
-	// Initial colour
-	std::vector<float> leftColour = { 0.92f, 0.24f, 0.48f };
+	// Initial triangle colour
+	std::vector<float> leftColour = { 0.85f, 0.40f, 0.95f };
 	bool setColour = false;
 
 
