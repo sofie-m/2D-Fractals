@@ -148,15 +148,18 @@ int main() {
 		cpuGeom.verts.clear();
 		cpuGeom.cols.clear();
 
-		sierpinskiTriangleCreate(triangle, iteration, setColour, cpuGeom);
-		gpuGeom.setVerts(cpuGeom.verts); // Upload vertex position geometry to VBO
-		gpuGeom.setCols(cpuGeom.cols); // Upload vertex colour attribute to VBO
+		if (sceneNumber == 0) {
+			sierpinskiTriangleCreate(triangle, iteration, setColour, cpuGeom);
+			gpuGeom.setVerts(cpuGeom.verts); // Upload vertex position geometry to VBO
+			gpuGeom.setCols(cpuGeom.cols); // Upload vertex colour attribute to VBO
 
-		glEnable(GL_FRAMEBUFFER_SRGB); // Expect Colour to be encoded in sRGB standard (as opposed to RGB) 
-		// https://www.viewsonic.com/library/creative-work/srgb-vs-adobe-rgb-which-one-to-use/
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear render screen (all zero) and depth (all max depth)
-		glDrawArrays(GL_TRIANGLES, 0, cpuGeom.verts.size()); // Render primitives
-		glDisable(GL_FRAMEBUFFER_SRGB); // disable sRGB for things like imgui (if used)
+			glEnable(GL_FRAMEBUFFER_SRGB); // Expect Colour to be encoded in sRGB standard (as opposed to RGB) 
+			// https://www.viewsonic.com/library/creative-work/srgb-vs-adobe-rgb-which-one-to-use/
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear render screen (all zero) and depth (all max depth)
+			glDrawArrays(GL_TRIANGLES, 0, cpuGeom.verts.size()); // Render primitives
+			glDisable(GL_FRAMEBUFFER_SRGB); // disable sRGB for things like imgui (if used)
+		}
+		
 
 		window.swapBuffers(); //Swap the buffers while displaying the previous 	
 	}
