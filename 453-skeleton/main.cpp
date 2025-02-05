@@ -184,11 +184,10 @@ int main() {
 		}
 
 		else if (sceneNumber == 1) {
-			cpuGeom.verts.push_back(glm::vec3(curve.A.at(0), curve.A.at(1), 0.0f));
-			cpuGeom.verts.push_back(glm::vec3(curve.B.at(0), curve.B.at(1), 0.0f));
+			//cpuGeom.verts.push_back(glm::vec3(curve.A.at(0), curve.A.at(1), 0.0f));
+			//cpuGeom.verts.push_back(glm::vec3(curve.B.at(0), curve.B.at(1), 0.0f));
 		
-			cpuGeom.cols.push_back(glm::vec3(curve.colour.at(0), curve.colour.at(1), curve.colour.at(2)));
-			cpuGeom.cols.push_back(glm::vec3(curve.colour.at(0), curve.colour.at(1), curve.colour.at(2)));
+			
 
 			gpuGeom.setVerts(cpuGeom.verts); // Upload vertex position geometry to VBO
 			gpuGeom.setCols(cpuGeom.cols); // Upload vertex colour attribute to VBO
@@ -209,7 +208,7 @@ int main() {
 }
 
 
-	void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration, bool setColour, CPU_Geometry & cpuGeom) {
+void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration, bool setColour, CPU_Geometry & cpuGeom) {
 	std::vector<float> D, E, F;
 	
 	if (iteration > 0) {
@@ -256,3 +255,27 @@ int main() {
 }
 
 
+void levyCCurveCreate(LevyCCurve line, int iteration, bool setColour, CPU_Geometry cpuGeom) {
+	std::vector<float> C, D, E, ePrime;
+
+	if (iteration > 0) {
+		C = { ((line.A.at(0) * float(2 / 3)) + (line.B.at(0) * float(1 / 3))), ((line.A.at(1) * float(2 / 3)) + (line.B.at(1) * float(1 / 3))) };
+		D = { ((line.A.at(0) * float(1 / 3)) + (line.B.at(0) * float(2 / 3))), ((line.A.at(1) * float(1 / 3)) + (line.B.at(1) * float(2 / 3))) };
+		
+		ePrime = { (line.A.at(0) + line.B.at(0)) / 2, (line.A.at(1) + line.B.at(1)) / 2 };
+		E = { ePrime.at(0) + float((sqrt(3)) / 6), ePrime.at(1) + float((sqrt(3)) / 6) };
+		
+	}
+
+	else {
+		// Add vertices to vertice vector
+		cpuGeom.verts.push_back(glm::vec3(line.A.at(0), line.A.at(1), 0.f)); // Lower Left
+		cpuGeom.verts.push_back(glm::vec3(line.B.at(0), line.B.at(1), 0.f)); // Lower Right
+		//cpuGeom.verts.push_back(glm::vec3(line.C.at(0), line.C.at(1), 0.f)); // Upper	
+
+		// Add colours to colour vector
+		cpuGeom.cols.push_back(glm::vec3(line.colour.at(0), line.colour.at(1), line.colour.at(2)));
+		cpuGeom.cols.push_back(glm::vec3(line.colour.at(0), line.colour.at(1), line.colour.at(2)));	cpuGeom.cols.push_back(glm::vec3(triangle.colour.at(0), triangle.colour.at(1), triangle.colour.at(2)));
+	}
+
+}
