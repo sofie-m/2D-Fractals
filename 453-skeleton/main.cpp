@@ -11,7 +11,8 @@
 #include "Window.h"
 #include "AssetPath.h"
 
-void sTriangle(std::vector<float> A, std::vector<float> B, std::vector<float> C, int iteration, CPU_Geometry& cpuGeom);
+void sTriangle(std::vector<float> A, std::vector<float> B, std::vector<float> C, std::vector<float> colour, int iteration, bool setColour, CPU_Geometry& cpuGeom);
+
 
 
 // EXAMPLE CALLBACKS
@@ -94,17 +95,10 @@ int main() {
 	std::vector<float> B = { 0.5f, -float(sqrt(3)) / 4 };
 	std::vector<float> C = { 0.f, float(sqrt(3)) / 4 };
 
-	cpuGeom.verts.push_back(glm::vec3(A.at(0), A.at(1), 0.f)); // Lower Left
-	cpuGeom.verts.push_back(glm::vec3(B.at(0), B.at(1), 0.f)); // Lower Right
-	cpuGeom.verts.push_back(glm::vec3(C.at(0), C.at(1), 0.f)); // Upper
+	// Initial colour
+	std::vector<float> leftColour = { 0.92f, 0.24f, 0.48f };
+	bool setColour = false;
 
-	// colours (these should be in linear space)
-	cpuGeom.cols.push_back(glm::vec3(0.4f, 0.4f, 1.f));
-	cpuGeom.cols.push_back(glm::vec3(0.4f, 0.4f, 1.f));
-	cpuGeom.cols.push_back(glm::vec3(0.4f, 0.4f, 1.f));
-
-	gpuGeom.setVerts(cpuGeom.verts); // Upload vertex position geometry to VBO
-	gpuGeom.setCols(cpuGeom.cols); // Upload vertex colour attribute to VBO
 
 	// RENDER LOOP
 	while (!window.shouldClose()) {
@@ -116,7 +110,7 @@ int main() {
 		cpuGeom.cols.clear();
 		
 
-		sTriangle(A, B, C, iteration, cpuGeom);
+		sTriangle(A, B, C, leftColour, iteration, setColour, cpuGeom);
 		gpuGeom.setVerts(cpuGeom.verts); // Upload vertex position geometry to VBO
 		gpuGeom.setCols(cpuGeom.cols); // Upload vertex colour attribute to VBO
 
@@ -133,34 +127,52 @@ int main() {
 	return 0;
 }
 
-void sTriangle(std::vector<float> A, std::vector<float> B, std::vector<float> C, int iteration, CPU_Geometry& cpuGeom) {
+void sTriangle(std::vector<float> A, std::vector<float> B, std::vector<float> C, std::vector<float> colour, int iteration, bool setColour, CPU_Geometry& cpuGeom) {
 	std::vector<float> D, E, F;
 
 	if (iteration > 0) {
 		D = { (0.5f * A.at(0)) + (0.5f * C.at(0)), (0.5f * A.at(1)) + (0.5f * C.at(1)) };
 		E = { (0.5f * C.at(0)) + (0.5f * B.at(0)), (0.5f * C.at(1)) + (0.5f * B.at(1)) };
 		F = { (0.5f * B.at(0)) + (0.5f * A.at(0)), (0.5f * B.at(1)) + (0.5f * A.at(1)) };
-
 		
+		if (!setColour) {
+			std::vector<float> leftColour = { 0.85f, 0.40f, 0.95f }; // Pink 234, 151, 247
+			std::vector<float> rightColour = { 0.95f, 0.40f, 0.50f }; // orange 247, 151, 151
+			std::vector<float> topColour = { 0.50f , 0.40f, 0.95f }; // Purple 186, 151, 247
 
-		sTriangle(D, E, C, iteration - 1, cpuGeom);
-		sTriangle(A, F, D, iteration - 1, cpuGeom);
-		sTriangle(F, B, E, iteration - 1, cpuGeom);
+			sTriangle(D, E, C, topColour, iteration - 1, true, cpuGeom);
+			sTriangle(A, F, D, leftColour, iteration - 1, true, cpuGeom);
+			sTriangle(F, B, E, rightColour, iteration - 1, true, cpuGeom);
+		}
+
+		else {
+			std::vector<float> leftColour = { colour.at(0) + 0.1f, colour.at(1) - 0.1f, colour.at(2) + 0.1f }; // Increase pink
+			std::vector<float> rightColour = { colour.at(0) + 0.2f, colour.at(1) - 0.0f, colour.at(2) - 0.2f }; // Increase orange
+			std::vector<float> topColour = { colour.at(0) - 0.2f, colour.at(1) - 0.0f, colour.at(2) + 0.2f }; // Increase purple
+
+
+			sTriangle(D, E, C, topColour, iteration - 1, true, cpuGeom);
+			sTriangle(A, F, D, leftColour, iteration - 1, true, cpuGeom);
+			sTriangle(F, B, E, rightColour, iteration - 1, true, cpuGeom);
+		}
+	
 
 	}
 	else {
+		// Add vertices to vertice vector
 		cpuGeom.verts.push_back(glm::vec3(A.at(0), A.at(1), 0.f)); // Lower Left
 		cpuGeom.verts.push_back(glm::vec3(B.at(0), B.at(1), 0.f)); // Lower Right
-		cpuGeom.verts.push_back(glm::vec3(C.at(0), C.at(1), 0.f)); // Upper
+		cpuGeom.verts.push_back(glm::vec3(C.at(0), C.at(1), 0.f)); // Upper	
 
-		cpuGeom.cols.push_back(glm::vec3(0.f, 0.f, 1.f));
-		cpuGeom.cols.push_back(glm::vec3(0.f, 0.f, 1.f));
-		cpuGeom.cols.push_back(glm::vec3(0.f, 0.f, 1.f));
-		
+		// Add colours to colour vector
+		cpuGeom.cols.push_back(glm::vec3(colour.at(0), colour.at(1), colour.at(2)));
+		cpuGeom.cols.push_back(glm::vec3(colour.at(0), colour.at(1), colour.at(2)));
+		cpuGeom.cols.push_back(glm::vec3(colour.at(0), colour.at(1), colour.at(2)));
+
 
 	}
 
 
 }
 
-// push to gpu in batch
+
