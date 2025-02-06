@@ -38,19 +38,22 @@ public:
 	std::vector<float> A;
 	std::vector<float> B;
 
-	std::vector<float> colour;
+	std::vector<float> colourA;
+	std::vector<float> colourB;
 
-	LevyCCurve(std::vector<float> x, std::vector<float> y, std::vector<float> initColour) {
+
+	LevyCCurve(std::vector<float> x, std::vector<float> y, std::vector<float> colourLeft, std::vector<float> colourRight) {
 		A = x;
 		B = y;
 
-		colour = initColour;
+		colourA = colourLeft;
+		colourB = colourRight;
 	}
 };
 
 
 void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration, bool setColour, CPU_Geometry& cpuGeom);
-void levyCCurveCreate(LevyCCurve curve, int iteration, CPU_Geometry cpuGeom);
+void levyCCurveCreate(LevyCCurve curve, int iteration, CPU_Geometry& cpuGeom);
 
 
 // EXAMPLE CALLBACKS
@@ -157,8 +160,9 @@ int main() {
 	std::vector<float> ver4 = { -0.5f, 0.f };
 	std::vector<float> ver5 = { 0.5f, 0.f };
 
-	std::vector<float> colourLevyInit = { 0.f, 1.f, 0.f };
-	LevyCCurve curve(ver4, ver5, colourLevyInit);
+	std::vector<float> colourLeft = { 0.f, 1.f, 0.f };
+	std::vector<float> colourRight = { 1.f, 0.f, 0.f };
+	LevyCCurve line(ver4, ver5, colourLeft, colourRight);
 
 
 
@@ -183,11 +187,9 @@ int main() {
 			glDisable(GL_FRAMEBUFFER_SRGB); // disable sRGB for things like imgui (if used)
 		}
 
-		else if (sceneNumber == 1) {
-			//cpuGeom.verts.push_back(glm::vec3(curve.A.at(0), curve.A.at(1), 0.0f));
-			//cpuGeom.verts.push_back(glm::vec3(curve.B.at(0), curve.B.at(1), 0.0f));
-		
-			levyCCurveCreate(curve, iteration, cpuGeom);
+		else if (sceneNumber == 1) {		
+			levyCCurveCreate(line, iteration, cpuGeom);
+			
 
 			gpuGeom.setVerts(cpuGeom.verts); // Upload vertex position geometry to VBO
 			gpuGeom.setCols(cpuGeom.cols); // Upload vertex colour attribute to VBO
@@ -255,32 +257,15 @@ void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration, bool s
 }
 
 
-void levyCCurveCreate(LevyCCurve line, int iteration, CPU_Geometry cpuGeom) {
+void levyCCurveCreate(LevyCCurve line, int iteration, CPU_Geometry& cpuGeom) {
 	std::vector<float> C, D, E, ePrime;
+	// Add vertices to vertice vector
+	cpuGeom.verts.push_back(glm::vec3(line.A.at(0), line.A.at(1), 0.f)); // Lower Left
+	cpuGeom.verts.push_back(glm::vec3(line.B.at(0), line.B.at(1), 0.f)); // Lower Right
 
-	if (iteration > 0) {
-		C = { ((line.A.at(0) * float(2 / 3)) + (line.B.at(0) * float(1 / 3))), ((line.A.at(1) * float(2 / 3)) + (line.B.at(1) * float(1 / 3))) };
-		D = { ((line.A.at(0) * float(1 / 3)) + (line.B.at(0) * float(2 / 3))), ((line.A.at(1) * float(1 / 3)) + (line.B.at(1) * float(2 / 3))) };
-		
-		ePrime = { (line.A.at(0) + line.B.at(0)) / 2, (line.A.at(1) + line.B.at(1)) / 2 };
-		E = { ePrime.at(0) + float((sqrt(3)) / 6), ePrime.at(1) + float((sqrt(3)) / 6) };
-
-		LevyCCurve newLine1(C, E, line.colour);
-		LevyCCurve newLine2(E, D, line.colour);
-		levyCCurveCreate(newLine1, iteration - 1, cpuGeom);
-		levyCCurveCreate(newLine2, iteration - 1, cpuGeom);
-		
-	}
-
-	else {
-		// Add vertices to vertice vector
-		cpuGeom.verts.push_back(glm::vec3(line.A.at(0), line.A.at(1), 0.f)); // Lower Left
-		cpuGeom.verts.push_back(glm::vec3(line.B.at(0), line.B.at(1), 0.f)); // Lower Right
-		//cpuGeom.verts.push_back(glm::vec3(line.C.at(0), line.C.at(1), 0.f)); // Upper	
-
-		// Add colours to colour vector
-		cpuGeom.cols.push_back(glm::vec3(line.colour.at(0), line.colour.at(1), line.colour.at(2)));
-		cpuGeom.cols.push_back(glm::vec3(line.colour.at(0), line.colour.at(1), line.colour.at(2)));
-	}
+	// Add colours to colour vector
+	cpuGeom.cols.push_back(glm::vec3(line.colourA.at(0), line.colourA.at(1), line.colourA.at(2)));
+	cpuGeom.cols.push_back(glm::vec3(line.colourB.at(0), line.colourB.at(1), line.colourB.at(2)));
+	
 
 }
