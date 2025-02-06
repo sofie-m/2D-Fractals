@@ -50,7 +50,7 @@ public:
 
 
 void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration, bool setColour, CPU_Geometry& cpuGeom);
-//void sierpinskiTriangleRender(sierpinskiTriangle triangle, int iteration, int sceneNumber, Window& window, ShaderProgram& shader, GPU_Geometry& gpuGeom, CPU_Geometry& cpuGeom);
+void levyCCurveCreate(LevyCCurve curve, int iteration, CPU_Geometry cpuGeom);
 
 
 // EXAMPLE CALLBACKS
@@ -187,11 +187,11 @@ int main() {
 			//cpuGeom.verts.push_back(glm::vec3(curve.A.at(0), curve.A.at(1), 0.0f));
 			//cpuGeom.verts.push_back(glm::vec3(curve.B.at(0), curve.B.at(1), 0.0f));
 		
-			
+			levyCCurveCreate(curve, iteration, cpuGeom);
 
 			gpuGeom.setVerts(cpuGeom.verts); // Upload vertex position geometry to VBO
 			gpuGeom.setCols(cpuGeom.cols); // Upload vertex colour attribute to VBO
-
+			
 			glEnable(GL_FRAMEBUFFER_SRGB); // Expect Colour to be encoded in sRGB standard (as opposed to RGB) 
 			// https://www.viewsonic.com/library/creative-work/srgb-vs-adobe-rgb-which-one-to-use/
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear render screen (all zero) and depth (all max depth)
@@ -255,7 +255,7 @@ void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration, bool s
 }
 
 
-void levyCCurveCreate(LevyCCurve line, int iteration, bool setColour, CPU_Geometry cpuGeom) {
+void levyCCurveCreate(LevyCCurve line, int iteration, CPU_Geometry cpuGeom) {
 	std::vector<float> C, D, E, ePrime;
 
 	if (iteration > 0) {
@@ -264,6 +264,11 @@ void levyCCurveCreate(LevyCCurve line, int iteration, bool setColour, CPU_Geomet
 		
 		ePrime = { (line.A.at(0) + line.B.at(0)) / 2, (line.A.at(1) + line.B.at(1)) / 2 };
 		E = { ePrime.at(0) + float((sqrt(3)) / 6), ePrime.at(1) + float((sqrt(3)) / 6) };
+
+		LevyCCurve newLine1(C, E, line.colour);
+		LevyCCurve newLine2(E, D, line.colour);
+		levyCCurveCreate(newLine1, iteration - 1, cpuGeom);
+		levyCCurveCreate(newLine2, iteration - 1, cpuGeom);
 		
 	}
 
@@ -275,7 +280,7 @@ void levyCCurveCreate(LevyCCurve line, int iteration, bool setColour, CPU_Geomet
 
 		// Add colours to colour vector
 		cpuGeom.cols.push_back(glm::vec3(line.colour.at(0), line.colour.at(1), line.colour.at(2)));
-		cpuGeom.cols.push_back(glm::vec3(line.colour.at(0), line.colour.at(1), line.colour.at(2)));	cpuGeom.cols.push_back(glm::vec3(triangle.colour.at(0), triangle.colour.at(1), triangle.colour.at(2)));
+		cpuGeom.cols.push_back(glm::vec3(line.colour.at(0), line.colour.at(1), line.colour.at(2)));
 	}
 
 }
