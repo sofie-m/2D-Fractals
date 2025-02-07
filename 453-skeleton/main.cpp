@@ -58,7 +58,7 @@ public:
 
 
 void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration, bool setColour, CPU_Geometry& cpuGeom);
-void levyCCurveCreate(LevyCCurve curve, int iteration, CPU_Geometry& cpuGeom);
+void levyCCurveCreate(LevyCCurve curve, int iteration, int rotations, CPU_Geometry& cpuGeom);
 
 
 // EXAMPLE CALLBACKS
@@ -168,6 +168,7 @@ int main() {
 	std::vector<float> colourLeft = { 0.f, 1.f, 0.f };
 	std::vector<float> colourRight = { 1.f, 0.f, 0.f };
 	float length = 1.f;
+	int rotations = 1;
 	LevyCCurve line(ver4, ver5, colourLeft, colourRight, length); // initial length of line is 1
 
 
@@ -194,7 +195,7 @@ int main() {
 		}
 
 		else if (sceneNumber == 1) {		
-			levyCCurveCreate(line, iteration, cpuGeom);
+			levyCCurveCreate(line, iteration, rotations, cpuGeom);
 			gpuGeom.setVerts(cpuGeom.verts); // Upload vertex position geometry to VBO
 			gpuGeom.setCols(cpuGeom.cols); // Upload vertex colour attribute to VBO
 			
@@ -261,27 +262,21 @@ void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration, bool s
 }
 
 
-void levyCCurveCreate(LevyCCurve line, int iteration, CPU_Geometry& cpuGeom) {
+void levyCCurveCreate(LevyCCurve line, int iteration, int rotations, CPU_Geometry& cpuGeom) {
 	if (iteration > 0) {
-		
-		float newLength = line.length * (sqrt(2) / 2);
-		float halfLength = line.length / 2;
-		
-		glm::vec4 rotateC(halfLength, 0.f, 0.f, 0.f);
 
-		
-		glm::mat4 rotate = glm::rotate(glm::mat4(1.0f), float(glm::radians(45.f)), glm::vec3(0.f, 0.f, 1.f));
+		float lengthX = line.B.x - line.A.x;
+		float lengthY = line.B.y - line.A.y;
+		float newX = line.A.x + (lengthX / 2) - (lengthY / 2);
+		float newY = line.A.y + (lengthY / 2) + (lengthX / 2);
+		glm::vec3 C(newX, newY, 0.f);
 
-		glm::vec3 C = rotate*rotateC;
+		LevyCCurve leftLine(line.A, C, line.colourA, line.colourB, line.length);
+		LevyCCurve rightLine(C, line.B, line.colourA, line.colourB, line.length);
 
-		glm::mat4 translate = glm::translate(rotate, glm::vec3(halfLength, 0.f, 0.f));
+		levyCCurveCreate(leftLine, iteration - 1, rotations + 1, cpuGeom);
+		levyCCurveCreate(rightLine, iteration - 1, rotations + 1, cpuGeom);
 
-		C = glm::mat3(translate) * C;
-		 
-
-		LevyCCurve leftLine(line.A, C, line.colourA, line.colourB, newLength);
-
-		levyCCurveCreate(leftLine, iteration - 1, cpuGeom);
 		
 
 	}
