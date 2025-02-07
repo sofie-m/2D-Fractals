@@ -42,23 +42,19 @@ public:
 	std::vector<float> colourA;
 	std::vector<float> colourB;
 
-	// Length of line
-	float length;
 
-	LevyCCurve(glm::vec3 x, glm::vec3 y, std::vector<float> colourLeft, std::vector<float> colourRight, float lineLength) {
+	LevyCCurve(glm::vec3 x, glm::vec3 y, std::vector<float> colourLeft, std::vector<float> colourRight) {
 		A = x;
 		B = y;
 
 		colourA = colourLeft;
 		colourB = colourRight;
-
-		length = lineLength;
 	}
 };
 
 
 void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration, bool setColour, CPU_Geometry& cpuGeom);
-void levyCCurveCreate(LevyCCurve curve, int iteration, int rotations, CPU_Geometry& cpuGeom);
+void levyCCurveCreate(LevyCCurve curve, int iteration, CPU_Geometry& cpuGeom);
 
 
 // EXAMPLE CALLBACKS
@@ -167,9 +163,7 @@ int main() {
 
 	std::vector<float> colourLeft = { 0.f, 1.f, 0.f };
 	std::vector<float> colourRight = { 1.f, 0.f, 0.f };
-	float length = 1.f;
-	int rotations = 1;
-	LevyCCurve line(ver4, ver5, colourLeft, colourRight, length); // initial length of line is 1
+	LevyCCurve line(ver4, ver5, colourLeft, colourRight);
 
 
 
@@ -195,7 +189,7 @@ int main() {
 		}
 
 		else if (sceneNumber == 1) {		
-			levyCCurveCreate(line, iteration, rotations, cpuGeom);
+			levyCCurveCreate(line, iteration, cpuGeom);
 			gpuGeom.setVerts(cpuGeom.verts); // Upload vertex position geometry to VBO
 			gpuGeom.setCols(cpuGeom.cols); // Upload vertex colour attribute to VBO
 			
@@ -262,7 +256,7 @@ void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration, bool s
 }
 
 
-void levyCCurveCreate(LevyCCurve line, int iteration, int rotations, CPU_Geometry& cpuGeom) {
+void levyCCurveCreate(LevyCCurve line, int iteration, CPU_Geometry& cpuGeom) {
 	if (iteration > 0) {
 
 		float lengthX = line.B.x - line.A.x;
@@ -271,13 +265,14 @@ void levyCCurveCreate(LevyCCurve line, int iteration, int rotations, CPU_Geometr
 		float newY = line.A.y + (lengthY / 2) + (lengthX / 2);
 		glm::vec3 C(newX, newY, 0.f);
 
-		LevyCCurve leftLine(line.A, C, line.colourA, line.colourB, line.length);
-		LevyCCurve rightLine(C, line.B, line.colourA, line.colourB, line.length);
+		LevyCCurve leftLine(line.A, C, line.colourA, line.colourB);
+		LevyCCurve rightLine(C, line.B, line.colourA, line.colourB);
 
-		levyCCurveCreate(leftLine, iteration - 1, rotations + 1, cpuGeom);
-		levyCCurveCreate(rightLine, iteration - 1, rotations + 1, cpuGeom);
+		levyCCurveCreate(leftLine, iteration - 1, cpuGeom);
+		levyCCurveCreate(rightLine, iteration - 1, cpuGeom);
 
-		
+		// TODO: colour
+		// TODO: remove redundant parameters 
 
 	}
 
