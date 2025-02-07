@@ -30,24 +30,29 @@ public:
 
 		// Initial triangle colour
 		colour = newColour;
+
 	}
 };
 
 class LevyCCurve {
 public:
-	std::vector<float> A;
-	std::vector<float> B;
+	glm::vec3 A;
+	glm::vec3 B;
 
 	std::vector<float> colourA;
 	std::vector<float> colourB;
 
+	// Length of line
+	float length;
 
-	LevyCCurve(std::vector<float> x, std::vector<float> y, std::vector<float> colourLeft, std::vector<float> colourRight) {
+	LevyCCurve(glm::vec3 x, glm::vec3 y, std::vector<float> colourLeft, std::vector<float> colourRight, float lineLength) {
 		A = x;
 		B = y;
 
 		colourA = colourLeft;
 		colourB = colourRight;
+
+		length = lineLength;
 	}
 };
 
@@ -157,12 +162,13 @@ int main() {
 	bool setColour = false;
 
 	// vertices (initial line of Levy C Curve)
-	std::vector<float> ver4 = { -0.5f, 0.f };
-	std::vector<float> ver5 = { 0.5f, 0.f };
+	glm::vec3 ver4(- 0.5f, 0.f, 0.f);
+	glm::vec3 ver5( 0.5f, 0.f, 0.f );
 
 	std::vector<float> colourLeft = { 0.f, 1.f, 0.f };
 	std::vector<float> colourRight = { 1.f, 0.f, 0.f };
-	LevyCCurve line(ver4, ver5, colourLeft, colourRight);
+	float length = 1.f;
+	LevyCCurve line(ver4, ver5, colourLeft, colourRight, length); // initial length of line is 1
 
 
 
@@ -189,8 +195,6 @@ int main() {
 
 		else if (sceneNumber == 1) {		
 			levyCCurveCreate(line, iteration, cpuGeom);
-			
-
 			gpuGeom.setVerts(cpuGeom.verts); // Upload vertex position geometry to VBO
 			gpuGeom.setCols(cpuGeom.cols); // Upload vertex colour attribute to VBO
 			
@@ -258,14 +262,37 @@ void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration, bool s
 
 
 void levyCCurveCreate(LevyCCurve line, int iteration, CPU_Geometry& cpuGeom) {
-	std::vector<float> C, D, E, ePrime;
-	// Add vertices to vertice vector
-	cpuGeom.verts.push_back(glm::vec3(line.A.at(0), line.A.at(1), 0.f)); // Lower Left
-	cpuGeom.verts.push_back(glm::vec3(line.B.at(0), line.B.at(1), 0.f)); // Lower Right
+	if (iteration > 0) {
+		
+		float newLength = line.length * (sqrtf(2) / 2);
+		
+		glm::vec4 rotateC(newLength, 0.f, 0.f, 0.f);
 
-	// Add colours to colour vector
-	cpuGeom.cols.push_back(glm::vec3(line.colourA.at(0), line.colourA.at(1), line.colourA.at(2)));
-	cpuGeom.cols.push_back(glm::vec3(line.colourB.at(0), line.colourB.at(1), line.colourB.at(2)));
+		// vector from A to B length(magnituded) sqrtf(B-A.at0^2 + ...) = 1
+		// 1 * sqrtf(2)/2 gives magnitude of line from A to C (and D to B)
+		//glm::mat3 lineMatrix = { glm::vec3(line.A.at(0), line.A.at(1), 0.f), glm::vec3(line.B.at(0), line.B.at(1), 0.f), glm::vec3(0.f, 0.f, 1.f)};
+		glm::mat4 model = glm::rotate(glm::mat4(1.0f), float(glm::radians(45.f)), glm::vec3(0.f, 0.f, 1.f));
+
+		 rotateC = model*rotateC;
+		 glm::vec3 C(rotateC);
+
+		 LevyCCurve leftLine(line.A, C, line.colourA, line.colourB, newLength);
+
+		 levyCCurveCreate(leftLine, iteration - 1, cpuGeom);
+		
+
+	}
+
+	else {
+		// Add vertices to vertice vector
+		cpuGeom.verts.push_back(line.A); // Left point
+		cpuGeom.verts.push_back(line.B); // Right point
+
+		// Add colours to colour vector
+		cpuGeom.cols.push_back(glm::vec3(line.colourA.at(0), line.colourA.at(1), line.colourA.at(2)));
+		cpuGeom.cols.push_back(glm::vec3(line.colourB.at(0), line.colourB.at(1), line.colourB.at(2)));
+	}
+	
 	
 
 }
