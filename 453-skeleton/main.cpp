@@ -39,11 +39,11 @@ public:
 	glm::vec3 A;
 	glm::vec3 B;
 
-	std::vector<float> colourA;
-	std::vector<float> colourB;
+	glm::vec3 colourA;
+	glm::vec3 colourB;
 
 
-	LevyCCurve(glm::vec3 x, glm::vec3 y, std::vector<float> colourLeft, std::vector<float> colourRight) {
+	LevyCCurve(glm::vec3 x, glm::vec3 y, glm::vec3 colourLeft, glm::vec3 colourRight) {
 		A = x;
 		B = y;
 
@@ -161,8 +161,8 @@ int main() {
 	glm::vec3 ver4(- 0.5f, 0.f, 0.f);
 	glm::vec3 ver5( 0.5f, 0.f, 0.f );
 
-	std::vector<float> colourLeft = { 0.f, 1.f, 0.f };
-	std::vector<float> colourRight = { 1.f, 0.f, 0.f };
+	glm::vec3 colourLeft( 0.f, 1.f, 0.f );
+	glm::vec3 colourRight(0.f, 0.f, 1.f );
 	LevyCCurve line(ver4, ver5, colourLeft, colourRight);
 
 
@@ -259,19 +259,20 @@ void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration, bool s
 void levyCCurveCreate(LevyCCurve line, int iteration, CPU_Geometry& cpuGeom) {
 	if (iteration > 0) {
 
+		// Get midpoint of line
 		float lengthX = line.B.x - line.A.x;
 		float lengthY = line.B.y - line.A.y;
 		float newX = line.A.x + (lengthX / 2) - (lengthY / 2);
 		float newY = line.A.y + (lengthY / 2) + (lengthX / 2);
 		glm::vec3 C(newX, newY, 0.f);
 
-		LevyCCurve leftLine(line.A, C, line.colourA, line.colourB);
-		LevyCCurve rightLine(C, line.B, line.colourA, line.colourB);
+		glm::vec3 colourC(0.f, (line.colourA.y / 2), (line.colourB.z / 2));
+
+		LevyCCurve leftLine(line.A, C, line.colourA, colourC);
+		LevyCCurve rightLine(C, line.B, colourC, line.colourB);
 
 		levyCCurveCreate(leftLine, iteration - 1, cpuGeom);
 		levyCCurveCreate(rightLine, iteration - 1, cpuGeom);
-
-		// TODO: colour
 
 	}
 
@@ -281,8 +282,8 @@ void levyCCurveCreate(LevyCCurve line, int iteration, CPU_Geometry& cpuGeom) {
 		cpuGeom.verts.push_back(line.B); // Right point
 
 		// Add colours to colour vector
-		cpuGeom.cols.push_back(glm::vec3(line.colourA.at(0), line.colourA.at(1), line.colourA.at(2)));
-		cpuGeom.cols.push_back(glm::vec3(line.colourB.at(0), line.colourB.at(1), line.colourB.at(2)));
+		cpuGeom.cols.push_back(glm::vec3(line.colourA));
+		cpuGeom.cols.push_back(glm::vec3(line.colourB));
 	}
 	
 	
