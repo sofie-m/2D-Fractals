@@ -272,7 +272,6 @@ void levyCCurveCreate(LevyCCurve line, int iteration, CPU_Geometry& cpuGeom) {
 		levyCCurveCreate(rightLine, iteration - 1, cpuGeom);
 
 		// TODO: colour
-		// TODO: remove redundant parameters 
 
 	}
 
