@@ -264,21 +264,24 @@ void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration, bool s
 void levyCCurveCreate(LevyCCurve line, int iteration, CPU_Geometry& cpuGeom) {
 	if (iteration > 0) {
 		
-		float newLength = line.length * (sqrtf(2) / 2);
+		float newLength = line.length * (sqrt(2) / 2);
+		float halfLength = line.length / 2;
 		
-		glm::vec4 rotateC(newLength, 0.f, 0.f, 0.f);
+		glm::vec4 rotateC(halfLength, 0.f, 0.f, 0.f);
 
-		// vector from A to B length(magnituded) sqrtf(B-A.at0^2 + ...) = 1
-		// 1 * sqrtf(2)/2 gives magnitude of line from A to C (and D to B)
-		//glm::mat3 lineMatrix = { glm::vec3(line.A.at(0), line.A.at(1), 0.f), glm::vec3(line.B.at(0), line.B.at(1), 0.f), glm::vec3(0.f, 0.f, 1.f)};
-		glm::mat4 model = glm::rotate(glm::mat4(1.0f), float(glm::radians(45.f)), glm::vec3(0.f, 0.f, 1.f));
+		
+		glm::mat4 rotate = glm::rotate(glm::mat4(1.0f), float(glm::radians(45.f)), glm::vec3(0.f, 0.f, 1.f));
 
-		 rotateC = model*rotateC;
-		 glm::vec3 C(rotateC);
+		glm::vec3 C = rotate*rotateC;
 
-		 LevyCCurve leftLine(line.A, C, line.colourA, line.colourB, newLength);
+		glm::mat4 translate = glm::translate(rotate, glm::vec3(halfLength, 0.f, 0.f));
 
-		 levyCCurveCreate(leftLine, iteration - 1, cpuGeom);
+		C = glm::mat3(translate) * C;
+		 
+
+		LevyCCurve leftLine(line.A, C, line.colourA, line.colourB, newLength);
+
+		levyCCurveCreate(leftLine, iteration - 1, cpuGeom);
 		
 
 	}
