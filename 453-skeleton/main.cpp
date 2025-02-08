@@ -189,7 +189,7 @@ int main() {
 		}
 
 		else if (sceneNumber == 1) {
-			int totalIterations = iteration;
+			int totalIterations = iteration * 2; // Total number of iterations in one curve
 			levyCCurveCreate(line, iteration, totalIterations, cpuGeom);
 			gpuGeom.setVerts(cpuGeom.verts); // Upload vertex position geometry to VBO
 			gpuGeom.setCols(cpuGeom.cols); // Upload vertex colour attribute to VBO
