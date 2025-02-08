@@ -54,7 +54,7 @@ public:
 
 
 void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration, bool setColour, CPU_Geometry& cpuGeom);
-void levyCCurveCreate(LevyCCurve curve, int iteration, CPU_Geometry& cpuGeom);
+void levyCCurveCreate(LevyCCurve curve, int iteration, int totalIterations, CPU_Geometry& cpuGeom);
 
 
 // EXAMPLE CALLBACKS
@@ -188,8 +188,9 @@ int main() {
 			glDisable(GL_FRAMEBUFFER_SRGB); // disable sRGB for things like imgui (if used)
 		}
 
-		else if (sceneNumber == 1) {		
-			levyCCurveCreate(line, iteration, cpuGeom);
+		else if (sceneNumber == 1) {
+			int totalIterations = iteration;
+			levyCCurveCreate(line, iteration, totalIterations, cpuGeom);
 			gpuGeom.setVerts(cpuGeom.verts); // Upload vertex position geometry to VBO
 			gpuGeom.setCols(cpuGeom.cols); // Upload vertex colour attribute to VBO
 			
@@ -256,7 +257,7 @@ void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration, bool s
 }
 
 
-void levyCCurveCreate(LevyCCurve line, int iteration, CPU_Geometry& cpuGeom) {
+void levyCCurveCreate(LevyCCurve line, int iteration, int totalIterations, CPU_Geometry& cpuGeom) {
 	if (iteration > 0) {
 
 		// Get midpoint of line
@@ -266,13 +267,15 @@ void levyCCurveCreate(LevyCCurve line, int iteration, CPU_Geometry& cpuGeom) {
 		float newY = line.A.y + (lengthY / 2) + (lengthX / 2);
 		glm::vec3 C(newX, newY, 0.f);
 
-		glm::vec3 colourC(0.f, (line.colourA.y / 2), (line.colourB.z / 2));
+		float colourMidpoint = (static_cast<float>(totalIterations) - iteration) / totalIterations; // Cast to avoid improper truncate
+
+		glm::vec3 colourC = glm::mix(line.colourA, line.colourB, colourMidpoint);
 
 		LevyCCurve leftLine(line.A, C, line.colourA, colourC);
 		LevyCCurve rightLine(C, line.B, colourC, line.colourB);
 
-		levyCCurveCreate(leftLine, iteration - 1, cpuGeom);
-		levyCCurveCreate(rightLine, iteration - 1, cpuGeom);
+		levyCCurveCreate(leftLine, iteration - 1,totalIterations, cpuGeom);
+		levyCCurveCreate(rightLine, iteration - 1, totalIterations, cpuGeom);
 
 	}
 
