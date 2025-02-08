@@ -14,14 +14,14 @@
 class SierpinskiTriangle {
 public:
 	// Triangle vertices
-	std::vector<float> A;
-	std::vector<float> B;
-	std::vector<float> C;
+	glm::vec3 A;
+	glm::vec3 B;
+	glm::vec3 C;
 
 	// Triangle colour
-	std::vector<float> colour;
+	glm::vec3 colour;
 
-	SierpinskiTriangle(std::vector<float> x, std::vector<float> y, std::vector<float> z, std::vector<float> newColour) {
+	SierpinskiTriangle(glm::vec3 x, glm::vec3 y, glm::vec3 z, glm::vec3 newColour) {
 
 		// vertices (initial triangle)
 		A = x;
@@ -147,12 +147,12 @@ int main() {
 
 	
 	// vertices (initial triangle)
-	std::vector<float> ver1 = { -0.5f, -float(sqrt(3)) / 4 };
-	std::vector<float> ver2 = { 0.5f, -float(sqrt(3)) / 4 };
-	std::vector<float> ver3 = { 0.f, float(sqrt(3)) / 4 };
+	glm::vec3 ver1(- 0.5f, -float(sqrt(3)) / 4, 0.f );
+	glm::vec3 ver2(0.5f, -float(sqrt(3)) / 4, 0.f);
+	glm::vec3 ver3(0.f, float(sqrt(3)) / 4, 0.f);
 
 	// Initial triangle colour
-	std::vector<float> colourInit = { 0.85f, 0.40f, 0.95f };
+	glm::vec3 colourInit(0.85f, 0.40f, 0.95f );
 
 	SierpinskiTriangle triangle(ver1, ver2, ver3, colourInit);
 	bool setColour = false;
@@ -211,16 +211,18 @@ int main() {
 
 
 void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration, bool setColour, CPU_Geometry & cpuGeom) {
-	std::vector<float> D, E, F;
 	
 	if (iteration > 0) {
-		D = { (0.5f * triangle.A.at(0)) + (0.5f * triangle.C.at(0)), (0.5f * triangle.A.at(1)) + (0.5f * triangle.C.at(1)) };
-		E = { (0.5f * triangle.C.at(0)) + (0.5f * triangle.B.at(0)), (0.5f * triangle.C.at(1)) + (0.5f * triangle.B.at(1)) };
-		F = { (0.5f * triangle.B.at(0)) + (0.5f * triangle.A.at(0)), (0.5f * triangle.B.at(1)) + (0.5f * triangle.A.at(1)) };
+		glm::vec3 D(0.5f * (triangle.A + triangle.C));
+		//{ (0.5f * triangle.A.at(0)) + (0.5f * triangle.C.at(0)), (0.5f * triangle.A.at(1)) + (0.5f * triangle.C.at(1)) };
+		glm::vec3 E(0.5f * (triangle.C + triangle.B));
+			//= { (0.5f * triangle.C.at(0)) + (0.5f * triangle.B.at(0)), (0.5f * triangle.C.at(1)) + (0.5f * triangle.B.at(1)) };
+		glm::vec3 F(0.5f * (triangle.B + triangle.A));
+		//{ (0.5f * triangle.B.at(0)) + (0.5f * triangle.A.at(0)), (0.5f * triangle.B.at(1)) + (0.5f * triangle.A.at(1)) };
 		
-		std::vector<float> topColour; // Purple 
-		std::vector<float> leftColour; // Pink 
-		std::vector<float> rightColour; // Orange
+		glm::vec3 topColour; // Purple 
+		glm::vec3 leftColour; // Pink 
+		glm::vec3 rightColour; // Orange
 
 		if (!setColour) {
 			topColour = { 0.50f , 0.40f, 0.95f }; 
@@ -228,9 +230,9 @@ void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration, bool s
 			rightColour = { 0.95f, 0.40f, 0.50f }; 
 		}
 		else {
-			leftColour = { triangle.colour.at(0) + 0.1f, triangle.colour.at(1) - 0.1f, triangle.colour.at(2) + 0.1f }; // Increase pink
-			rightColour = { triangle.colour.at(0) + 0.2f, triangle.colour.at(1) - 0.0f, triangle.colour.at(2) - 0.2f }; // Increase orange
-			topColour = { triangle.colour.at(0) - 0.2f, triangle.colour.at(1) - 0.0f, triangle.colour.at(2) + 0.2f }; // Increase purple
+			leftColour = { triangle.colour.x + 0.1f, triangle.colour.y - 0.1f, triangle.colour.z + 0.1f }; // Increase pink
+			rightColour = { triangle.colour.x + 0.2f, triangle.colour.y - 0.0f, triangle.colour.z - 0.2f }; // Increase orange
+			topColour = { triangle.colour.x - 0.2f, triangle.colour.y - 0.0f, triangle.colour.z + 0.2f }; // Increase purple
 		}
 
 		SierpinskiTriangle topTriangle(D, E, triangle.C, topColour);
@@ -245,14 +247,14 @@ void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration, bool s
 	}
 	else {
 		// Add vertices to vertice vector
-		cpuGeom.verts.push_back(glm::vec3(triangle.A.at(0), triangle.A.at(1), 0.f)); // Lower Left
-		cpuGeom.verts.push_back(glm::vec3(triangle.B.at(0), triangle.B.at(1), 0.f)); // Lower Right
-		cpuGeom.verts.push_back(glm::vec3(triangle.C.at(0), triangle.C.at(1), 0.f)); // Upper	
+		cpuGeom.verts.push_back(glm::vec3(triangle.A)); // Lower Left
+		cpuGeom.verts.push_back(glm::vec3(triangle.B)); // Lower Right
+		cpuGeom.verts.push_back(glm::vec3(triangle.C)); // Upper	
 
 		// Add colours to colour vector
-		cpuGeom.cols.push_back(glm::vec3(triangle.colour.at(0), triangle.colour.at(1), triangle.colour.at(2)));
-		cpuGeom.cols.push_back(glm::vec3(triangle.colour.at(0), triangle.colour.at(1), triangle.colour.at(2)));
-		cpuGeom.cols.push_back(glm::vec3(triangle.colour.at(0), triangle.colour.at(1), triangle.colour.at(2)));
+		cpuGeom.cols.push_back(glm::vec3(triangle.colour));
+		cpuGeom.cols.push_back(glm::vec3(triangle.colour));
+		cpuGeom.cols.push_back(glm::vec3(triangle.colour));
 	}
 }
 
