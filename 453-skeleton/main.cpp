@@ -53,7 +53,7 @@ public:
 };
 
 
-void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration, bool setColour, CPU_Geometry& cpuGeom);
+void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration,bool setColour, CPU_Geometry& cpuGeom);
 void levyCCurveCreate(LevyCCurve curve, int iteration, int totalIterations, CPU_Geometry& cpuGeom);
 
 
@@ -147,12 +147,12 @@ int main() {
 
 	
 	// vertices (initial triangle)
-	glm::vec3 ver1(- 0.5f, -float(sqrt(3)) / 4, 0.f );
-	glm::vec3 ver2(0.5f, -float(sqrt(3)) / 4, 0.f);
-	glm::vec3 ver3(0.f, float(sqrt(3)) / 4, 0.f);
+	glm::vec3 ver1(- 0.75f, -float(sqrt(27)) / 8, 0.f );
+	glm::vec3 ver2(0.75f, -float(sqrt(27)) / 8, 0.f);
+	glm::vec3 ver3(0.f, float(sqrt(27)) / 8, 0.f);
 
 	// Initial triangle colour
-	glm::vec3 colourInit(0.85f, 0.40f, 0.95f );
+	glm::vec3 colourInit(0.5f, 0.5f, 1.f );
 
 	SierpinskiTriangle triangle(ver1, ver2, ver3, colourInit);
 	bool setColour = false;
@@ -214,25 +214,22 @@ void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration, bool s
 	
 	if (iteration > 0) {
 		glm::vec3 D(0.5f * (triangle.A + triangle.C));
-		//{ (0.5f * triangle.A.at(0)) + (0.5f * triangle.C.at(0)), (0.5f * triangle.A.at(1)) + (0.5f * triangle.C.at(1)) };
 		glm::vec3 E(0.5f * (triangle.C + triangle.B));
-			//= { (0.5f * triangle.C.at(0)) + (0.5f * triangle.B.at(0)), (0.5f * triangle.C.at(1)) + (0.5f * triangle.B.at(1)) };
 		glm::vec3 F(0.5f * (triangle.B + triangle.A));
-		//{ (0.5f * triangle.B.at(0)) + (0.5f * triangle.A.at(0)), (0.5f * triangle.B.at(1)) + (0.5f * triangle.A.at(1)) };
 		
 		glm::vec3 topColour; // Purple 
 		glm::vec3 leftColour; // Pink 
-		glm::vec3 rightColour; // Orange
+		glm::vec3 rightColour; // Red
 
 		if (!setColour) {
-			topColour = { 0.50f , 0.40f, 0.95f }; 
-			leftColour = { 0.85f, 0.40f, 0.95f }; 
-			rightColour = { 0.95f, 0.40f, 0.50f }; 
+			topColour = triangle.colour; 
+			leftColour = { 1.f, 0.5f, 1.f };
+			rightColour = { 1.f, 0.5f, 0.5f }; 
 		}
 		else {
-			leftColour = { triangle.colour.x + 0.1f, triangle.colour.y - 0.1f, triangle.colour.z + 0.1f }; // Increase pink
-			rightColour = { triangle.colour.x + 0.2f, triangle.colour.y - 0.0f, triangle.colour.z - 0.2f }; // Increase orange
-			topColour = { triangle.colour.x - 0.2f, triangle.colour.y - 0.0f, triangle.colour.z + 0.2f }; // Increase purple
+			leftColour = { triangle.colour.x, triangle.colour.y, triangle.colour.z + .1f}; // Increase pink
+			rightColour = { triangle.colour.x, triangle.colour.y - .1f, triangle.colour.z - .1f }; // Increase red
+			topColour = { triangle.colour.x - .1f, triangle.colour.y, triangle.colour.z + .1f}; // Increase purple
 		}
 
 		SierpinskiTriangle topTriangle(D, E, triangle.C, topColour);
