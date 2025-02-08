@@ -158,8 +158,8 @@ int main() {
 	bool setColour = false;
 
 	// vertices (initial line of Levy C Curve)
-	glm::vec3 ver4(- 0.5f, 0.f, 0.f);
-	glm::vec3 ver5( 0.5f, 0.f, 0.f );
+	glm::vec3 ver4(- 0.5f, -0.3f, 0.f);
+	glm::vec3 ver5( 0.5f, -0.3f, 0.f );
 
 	glm::vec3 colourLeft( 0.f, 1.f, 0.f );
 	glm::vec3 colourRight(0.f, 0.f, 1.f );
