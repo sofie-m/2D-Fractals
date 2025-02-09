@@ -1,0 +1,12 @@
+CPSC 453 Assignment 1: Fractals
+Sofie Curtis
+
+Keyboard Controls:
+Up/down arrow keys increase/decrease the number of iterations.
+Right/left arrow keys switch between scenes.
+
+Mouse Controls:
+Left/right click switches between scenes.
+Scroll (mouse wheel) increases/decreases the number of iterations.
+
+Built submission using Visual Studio 2022, x64 Windows with MSVC (msvc_x64_x64)
