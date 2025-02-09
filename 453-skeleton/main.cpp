@@ -101,6 +101,7 @@ private:
 
 // END EXAMPLES
 
+
 // Callbacks
 class MyCallbacks : public CallbackInterface {
 
@@ -134,6 +135,37 @@ public:
 				sceneNumber--;
 			}
 			std::cout << "Scene num: " << sceneNumber << std::endl;
+		}
+	}
+
+	// Increase and decrease scene and iterations with mouse
+	virtual void mouseButtonCallback(int button, int action, int mods) {
+
+		// Left click switches to next scene
+		if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+			if (sceneNumber < 2) {
+				sceneNumber++;
+			}
+		}
+		// Right click switches to previous scene
+		if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
+			if (sceneNumber > 0) {
+				sceneNumber--;
+			}
+		}	
+	}
+
+	// Controll iteration number using scroll (mouse wheel)
+	virtual void scrollCallback(double xoffset, double yoffset) {
+		
+		// Scroll up to increase iteration
+		if (yoffset > 0) {
+			iteration++;
+		}
+
+		// Scroll down to decrease iteration
+		if (yoffset < 0 && iteration > 0) {
+			iteration--;
 		}
 	}
 
