@@ -106,15 +106,19 @@ private:
 class MyCallbacks : public CallbackInterface {
 
 public:
-	MyCallbacks(int& iteration, int& sceneNumber) : iteration(iteration), sceneNumber(sceneNumber) {}
+	MyCallbacks(int& iteration, int& sceneNumber, int& maxIterations) : iteration(iteration), sceneNumber(sceneNumber), maxIterations(maxIterations) {}
 
 	// Increase and decrease scene and iteratios with arrow keys
 	virtual void keyCallback(int key, int scancode, int action, int mods) {
 		// Right arrow key increases iteration
 		if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS) {
-			iteration++;
-			std::cout << "Iteration num: " << iteration << std::endl;
+			
+			if (iteration < maxIterations) {
+				iteration++;
+				std::cout << "Iteration num: " << iteration << std::endl;
+			}
 		}
+
 		// Left arrow key decreases iteration
 		if (key == GLFW_KEY_LEFT && action == GLFW_PRESS) {
 			if (iteration > 0) {
@@ -159,7 +163,7 @@ public:
 	virtual void scrollCallback(double xoffset, double yoffset) {
 		
 		// Scroll up to increase iteration
-		if (yoffset > 0) {
+		if (yoffset > 0 && iteration < maxIterations) {
 			iteration++;
 		}
 
@@ -172,6 +176,7 @@ public:
 private:
 	int& iteration;
 	int& sceneNumber;
+	int& maxIterations;
 
 };
 
@@ -196,7 +201,9 @@ int main() {
 	// CALLBACKS
 	int iteration = 0;
 	int sceneNumber = 0;
-	std::shared_ptr<MyCallbacks> Callback_ptr = std::make_shared<MyCallbacks>(iteration, sceneNumber); // Class To capture input events
+	int maxIterations;
+	
+	std::shared_ptr<MyCallbacks> Callback_ptr = std::make_shared<MyCallbacks>(iteration, sceneNumber, maxIterations); // Class To capture input events
 	window.setCallbacks(Callback_ptr); // Can also update callbacks to new ones as needed (create more than one instance)
 
 	// GEOMETRY
@@ -242,6 +249,12 @@ int main() {
 
 		// Scene 0: Sierpinski Triangle
 		if (sceneNumber == 0) {
+			maxIterations = 10;
+			// Prevent from generating a higher number of iterations than allowed
+			if (iteration > maxIterations) {
+				iteration = maxIterations;
+			}
+
 			int totalIterations = iteration;
 			sierpinskiTriangleCreate(triangle, iteration, totalIterations, cpuGeom);
 			gpuGeom.setVerts(cpuGeom.verts); // Upload vertex position geometry to VBO
@@ -257,6 +270,11 @@ int main() {
 
 		// Scene 1: Levy C Curve
 		else if (sceneNumber == 1) {
+			maxIterations = 18;
+			// Prevent from generating a higher number of iterations than allowed
+			if (iteration > maxIterations) {
+				iteration = maxIterations;
+			}
 			int totalIterations = iteration * 2; // TNumber of iterations in one curve
 			levyCCurveCreate(line, iteration, totalIterations, cpuGeom);
 			gpuGeom.setVerts(cpuGeom.verts); // Upload vertex position geometry to VBO
@@ -270,6 +288,11 @@ int main() {
 		
 		// Scene 3: Tree
 		else if (sceneNumber == 2) {
+			maxIterations = 10;
+			// Prevent from generating a higher number of iterations than allowed
+			if (iteration > maxIterations) {
+				iteration = maxIterations;
+			}
 			int iterationCounter = 0;
 			treeCreate(tree, iteration, iterationCounter, cpuGeom);
 			gpuGeom.setVerts(cpuGeom.verts); // Upload vertex position geometry to VBO
