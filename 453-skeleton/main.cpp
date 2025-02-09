@@ -57,15 +57,20 @@ public:
 	glm::vec3 base;
 	glm::vec3 top;
 
-	Tree(glm::vec3 base, glm::vec3 top) {
+	glm::vec3 colour;
+
+	Tree(glm::vec3 base, glm::vec3 top, glm::vec3 colour) {
 		this->base = base;
-		this->base = base;
+		this->top = top;
+
+		this->colour = colour;
 	}
 };
 
 
 void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration, int totalIterations, CPU_Geometry& cpuGeom);
 void levyCCurveCreate(LevyCCurve curve, int iteration, int totalIterations, CPU_Geometry& cpuGeom);
+void treeCreate(Tree branch, int iteration, CPU_Geometry& cpuGeom);
 
 
 // EXAMPLE CALLBACKS
@@ -110,7 +115,7 @@ public:
 			std::cout << "Iteration num: " << iteration << std::endl;
 		}
 		if (key == GLFW_KEY_UP && action == GLFW_PRESS) {
-			if (sceneNumber < 3) {
+			if (sceneNumber < 2) {
 				sceneNumber++;
 				std::cout << "Scene num: " << sceneNumber << std::endl;
 			}
@@ -178,6 +183,13 @@ int main() {
 	glm::vec3 colourRight(0.f, 0.f, 1.f );
 	LevyCCurve line(ver4, ver5, colourLeft, colourRight);
 
+	// Initial tree trunk
+	glm::vec3 trunkBase(0.f, -0.75f, 0.f);
+	glm::vec3 trunkTop(0.f, 0.25, 0.f);
+
+	glm::vec3 branchColour(.25f, .18f, .1f);
+	Tree tree(trunkBase, trunkTop, branchColour);
+
 
 
 	// RENDER LOOP
@@ -216,8 +228,16 @@ int main() {
 
 		}
 
-		else if (sceneNumber == 3) {
+		else if (sceneNumber == 2) {
+			treeCreate(tree, iteration, cpuGeom);
+			gpuGeom.setVerts(cpuGeom.verts); // Upload vertex position geometry to VBO
+			gpuGeom.setCols(cpuGeom.cols); // Upload vertex colour attribute to VBO
 
+			glEnable(GL_FRAMEBUFFER_SRGB); // Expect Colour to be encoded in sRGB standard (as opposed to RGB) 
+			// https://www.viewsonic.com/library/creative-work/srgb-vs-adobe-rgb-which-one-to-use/
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear render screen (all zero) and depth (all max depth)
+			glDrawArrays(GL_LINES, 0, cpuGeom.verts.size()); // Render primitives
+			glDisable(GL_FRAMEBUFFER_SRGB); // disable sRGB for things like imgui (if used)
 		}
 		
 
@@ -301,6 +321,13 @@ void levyCCurveCreate(LevyCCurve line, int iteration, int totalIterations, CPU_G
 
 }
 
-void treeCreate() {
+void treeCreate(Tree branch, int iteration, CPU_Geometry& cpuGeom) {
+	// Add vertices to vertice vector
+	cpuGeom.verts.push_back(branch.base); // Left point
+	cpuGeom.verts.push_back(branch.top); // Right point
+
+	// Add colours to colour vector
+	cpuGeom.cols.push_back(glm::vec3(branch.colour));
+	cpuGeom.cols.push_back(glm::vec3(branch.colour));
 
 }
