@@ -99,8 +99,11 @@ public:
 			std::cout << "Iteration num: " << iteration << std::endl;
 		}
 		if (key == GLFW_KEY_UP && action == GLFW_PRESS) {
-			sceneNumber++;
-			std::cout << "Scene num: " << sceneNumber << std::endl;
+			if (sceneNumber < 3) {
+				sceneNumber++;
+				std::cout << "Scene num: " << sceneNumber << std::endl;
+			}
+			
 		}
 		if (key == GLFW_KEY_DOWN && action == GLFW_PRESS) {
 			if (sceneNumber > 0) {
@@ -199,6 +202,10 @@ int main() {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear render screen (all zero) and depth (all max depth)
 			glDrawArrays(GL_LINES, 0, cpuGeom.verts.size()); // Render primitives
 			glDisable(GL_FRAMEBUFFER_SRGB); // disable sRGB for things like imgui (if used)
+
+		}
+
+		else if (sceneNumber == 3) {
 
 		}
 		
