@@ -77,31 +77,6 @@ void levyCCurveCreate(LevyCCurve curve, int iteration, int totalIterations, CPU_
 void treeCreate(Tree branch, int iteration, int iterationCounter, CPU_Geometry& cpuGeom);
 
 
-// EXAMPLE CALLBACKS
-class MyCallbacks2 : public CallbackInterface {
-
-public:
-	MyCallbacks2(ShaderProgram& shader) : shader(shader) {}
-
-	virtual void keyCallback(int key, int scancode, int action, int mods) {
-		
-		
-	}
-
-
-	// Other callbacks we implemented that you may use
-	//virtual void mouseButtonCallback(int button, int action, int mods) {}
-	//virtual void cursorPosCallback(double xpos, double ypos) {}
-	//virtual void scrollCallback(double xoffset, double yoffset) {}
-	//virtual void windowSizeCallback(int width, int height) { CallbackInterface::windowSizeCallback(width, height);/*Should be called*/ }
-
-private:
-	ShaderProgram& shader;
-};
-
-// END EXAMPLES
-
-
 // Callbacks
 class MyCallbacks : public CallbackInterface {
 
