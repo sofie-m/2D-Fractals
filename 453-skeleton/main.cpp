@@ -191,7 +191,6 @@ int main() {
 	Tree tree(trunkBase, trunkTop, branchColour);
 
 
-
 	// RENDER LOOP
 	while (!window.shouldClose()) {
 		glfwPollEvents(); // Propagate events to the callback class
@@ -227,8 +226,9 @@ int main() {
 			glDisable(GL_FRAMEBUFFER_SRGB); // disable sRGB for things like imgui (if used)
 
 		}
-
+		
 		else if (sceneNumber == 2) {
+		
 			treeCreate(tree, iteration, cpuGeom);
 			gpuGeom.setVerts(cpuGeom.verts); // Upload vertex position geometry to VBO
 			gpuGeom.setCols(cpuGeom.cols); // Upload vertex colour attribute to VBO
@@ -322,6 +322,21 @@ void levyCCurveCreate(LevyCCurve line, int iteration, int totalIterations, CPU_G
 }
 
 void treeCreate(Tree branch, int iteration, CPU_Geometry& cpuGeom) {
+
+	if (iteration > 0) {
+		// Make new branch 1/2 the size of the previous
+		float lengthX = (branch.top.x - branch.base.x)/2;
+		float lengthY = (branch.top.y - branch.base.y)/2;
+
+		glm::vec3 topTip(lengthX, lengthY, 0.f); // Vertice of the tip of the top branch
+		Tree topBranch(branch.top, topTip, branch.colour); // Create top branch
+
+		treeCreate(topBranch, iteration - 1, cpuGeom);
+
+
+
+	}
+
 	// Add vertices to vertice vector
 	cpuGeom.verts.push_back(branch.base); // Left point
 	cpuGeom.verts.push_back(branch.top); // Right point
@@ -329,5 +344,6 @@ void treeCreate(Tree branch, int iteration, CPU_Geometry& cpuGeom) {
 	// Add colours to colour vector
 	cpuGeom.cols.push_back(glm::vec3(branch.colour));
 	cpuGeom.cols.push_back(glm::vec3(branch.colour));
+
 
 }
