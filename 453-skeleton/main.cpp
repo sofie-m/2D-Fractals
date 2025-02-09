@@ -52,6 +52,17 @@ public:
 	}
 };
 
+class Tree {
+public:
+	glm::vec3 base;
+	glm::vec3 top;
+
+	Tree(glm::vec3 base, glm::vec3 top) {
+		this->base = base;
+		this->base = base;
+	}
+};
+
 
 void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration, int totalIterations, CPU_Geometry& cpuGeom);
 void levyCCurveCreate(LevyCCurve curve, int iteration, int totalIterations, CPU_Geometry& cpuGeom);
@@ -287,5 +298,9 @@ void levyCCurveCreate(LevyCCurve line, int iteration, int totalIterations, CPU_G
 	}
 	
 	
+
+}
+
+void treeCreate() {
 
 }
