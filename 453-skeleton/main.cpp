@@ -331,8 +331,20 @@ void treeCreate(Tree branch, int iteration, CPU_Geometry& cpuGeom) {
 		glm::vec3 topTip(branch.top.x + lengthX, branch.top.y + lengthY, 0.f); // Vertice of the tip of the top branch
 		glm::vec3 topConnect(branch.top); // Vertice that connects top branch to tree
 		Tree topBranch(topConnect, topTip, branch.colour); // Create top branch
-
 		treeCreate(topBranch, iteration - 1, cpuGeom);
+
+		
+		glm::vec3 midpoint((branch.base + branch.top) * .5f); // connecting point to trunk
+		glm::vec dirVec(branch.top - branch.base); // direction vector
+
+		// Make new branch 1/2 the size of the previous and rotated +25.7 degrees (left)
+		glm::mat4 rotate(glm::rotate(glm::mat4(1.0f), glm::radians(25.7f), glm::vec3(0.f, 0.f, 1.f))); // rotation matrix
+		glm::vec3 leftBranchTip(glm::vec3(rotate * glm::vec4(dirVec, 1.f)) * 0.5f); // left branch rotated and half the length of previous branch
+		leftBranchTip += midpoint; // translate to middle of previous branch
+
+		Tree leftBranch(midpoint, leftBranchTip, branch.colour);
+		treeCreate(leftBranch, iteration - 1, cpuGeom);
+
 
 	}
 	
