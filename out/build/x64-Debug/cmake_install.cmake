@@ -1,8 +1,8 @@
-# Install script for directory: C:/Users/sofie/cppProjects/CPSC-453-Assignment-1-Boilerplate
+# Install script for directory: C:/Users/Sofie/CppProjects/CPSC-453-Assignment-1-Boilerplate
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Users/sofie/cppProjects/CPSC-453-Assignment-1-Boilerplate/out/install/x64-Debug")
+  set(CMAKE_INSTALL_PREFIX "C:/Users/Sofie/CppProjects/CPSC-453-Assignment-1-Boilerplate/out/install/x64-Debug")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -34,17 +34,17 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/sofie/cppProjects/CPSC-453-Assignment-1-Boilerplate/out/build/x64-Debug/thirdparty/glad-opengl-3.3-core/cmake_install.cmake")
+  include("C:/Users/Sofie/CppProjects/CPSC-453-Assignment-1-Boilerplate/out/build/x64-Debug/thirdparty/glad-opengl-3.3-core/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/sofie/cppProjects/CPSC-453-Assignment-1-Boilerplate/out/build/x64-Debug/thirdparty/glfw-3.4/cmake_install.cmake")
+  include("C:/Users/Sofie/CppProjects/CPSC-453-Assignment-1-Boilerplate/out/build/x64-Debug/thirdparty/glfw-3.4/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/sofie/cppProjects/CPSC-453-Assignment-1-Boilerplate/out/build/x64-Debug/thirdparty/fmt-11.0.2/cmake_install.cmake")
+  include("C:/Users/Sofie/CppProjects/CPSC-453-Assignment-1-Boilerplate/out/build/x64-Debug/thirdparty/fmt-11.0.2/cmake_install.cmake")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)
@@ -55,5 +55,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/sofie/cppProjects/CPSC-453-Assignment-1-Boilerplate/out/build/x64-Debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Users/Sofie/CppProjects/CPSC-453-Assignment-1-Boilerplate/out/build/x64-Debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

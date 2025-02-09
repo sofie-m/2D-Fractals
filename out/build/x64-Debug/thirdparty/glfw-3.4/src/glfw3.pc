@@ -1,7 +1,7 @@
-prefix=C:/Users/sofie/cppProjects/CPSC-453-Assignment-1-Boilerplate/out/install/x64-Debug
+prefix=C:/Users/Sofie/CppProjects/CPSC-453-Assignment-1-Boilerplate/out/install/x64-Debug
 exec_prefix=${prefix}
-includedir=C:/Users/sofie/cppProjects/CPSC-453-Assignment-1-Boilerplate/out/install/x64-Debug/include
-libdir=C:/Users/sofie/cppProjects/CPSC-453-Assignment-1-Boilerplate/out/install/x64-Debug/lib
+includedir=C:/Users/Sofie/CppProjects/CPSC-453-Assignment-1-Boilerplate/out/install/x64-Debug/include
+libdir=C:/Users/Sofie/CppProjects/CPSC-453-Assignment-1-Boilerplate/out/install/x64-Debug/lib
 
 Name: GLFW
 Description: A multi-platform library for OpenGL, window and input

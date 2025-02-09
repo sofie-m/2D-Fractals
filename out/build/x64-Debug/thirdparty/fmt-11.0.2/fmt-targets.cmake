@@ -52,7 +52,7 @@ add_library(fmt::fmt STATIC IMPORTED)
 set_target_properties(fmt::fmt PROPERTIES
   INTERFACE_COMPILE_FEATURES "cxx_std_11"
   INTERFACE_COMPILE_OPTIONS "\$<\$<COMPILE_LANGUAGE:CXX>:/utf-8>"
-  INTERFACE_INCLUDE_DIRECTORIES "C:/Users/sofie/cppProjects/CPSC-453-Assignment-1-Boilerplate/thirdparty/fmt-11.0.2/include"
+  INTERFACE_INCLUDE_DIRECTORIES "C:/Users/Sofie/CppProjects/CPSC-453-Assignment-1-Boilerplate/thirdparty/fmt-11.0.2/include"
 )
 
 # Create imported target fmt::fmt-header-only
@@ -62,14 +62,14 @@ set_target_properties(fmt::fmt-header-only PROPERTIES
   INTERFACE_COMPILE_DEFINITIONS "FMT_HEADER_ONLY=1"
   INTERFACE_COMPILE_FEATURES "cxx_std_11"
   INTERFACE_COMPILE_OPTIONS "\$<\$<COMPILE_LANGUAGE:CXX>:/utf-8>"
-  INTERFACE_INCLUDE_DIRECTORIES "C:/Users/sofie/cppProjects/CPSC-453-Assignment-1-Boilerplate/thirdparty/fmt-11.0.2/include"
+  INTERFACE_INCLUDE_DIRECTORIES "C:/Users/Sofie/CppProjects/CPSC-453-Assignment-1-Boilerplate/thirdparty/fmt-11.0.2/include"
 )
 
 # Import target "fmt::fmt" for configuration "Debug"
 set_property(TARGET fmt::fmt APPEND PROPERTY IMPORTED_CONFIGURATIONS DEBUG)
 set_target_properties(fmt::fmt PROPERTIES
   IMPORTED_LINK_INTERFACE_LANGUAGES_DEBUG "CXX"
-  IMPORTED_LOCATION_DEBUG "C:/Users/sofie/cppProjects/CPSC-453-Assignment-1-Boilerplate/out/build/x64-Debug/thirdparty/fmt-11.0.2/fmtd.lib"
+  IMPORTED_LOCATION_DEBUG "C:/Users/Sofie/CppProjects/CPSC-453-Assignment-1-Boilerplate/out/build/x64-Debug/thirdparty/fmt-11.0.2/fmtd.lib"
   )
 
 # This file does not depend on other imported targets which have

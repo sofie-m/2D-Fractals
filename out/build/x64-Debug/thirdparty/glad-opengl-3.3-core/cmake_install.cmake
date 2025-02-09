@@ -1,8 +1,8 @@
-# Install script for directory: C:/Users/sofie/cppProjects/CPSC-453-Assignment-1-Boilerplate/thirdparty/glad-opengl-3.3-core
+# Install script for directory: C:/Users/Sofie/CppProjects/CPSC-453-Assignment-1-Boilerplate/thirdparty/glad-opengl-3.3-core
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Users/sofie/cppProjects/CPSC-453-Assignment-1-Boilerplate/out/install/x64-Debug")
+  set(CMAKE_INSTALL_PREFIX "C:/Users/Sofie/CppProjects/CPSC-453-Assignment-1-Boilerplate/out/install/x64-Debug")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
