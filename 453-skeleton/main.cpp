@@ -184,8 +184,8 @@ int main() {
 	LevyCCurve line(ver4, ver5, colourLeft, colourRight);
 
 	// Initial tree trunk
-	glm::vec3 trunkBase(0.f, -0.75f, 0.f);
-	glm::vec3 trunkTop(0.f, 0.25, 0.f);
+	glm::vec3 trunkBase(0.f, -0.85f, 0.f);
+	glm::vec3 trunkTop(0.f, 0.f, 0.f);
 
 	glm::vec3 branchColour(.25f, .18f, .1f);
 	Tree tree(trunkBase, trunkTop, branchColour);
@@ -328,14 +328,14 @@ void treeCreate(Tree branch, int iteration, CPU_Geometry& cpuGeom) {
 		float lengthX = (branch.top.x - branch.base.x)/2;
 		float lengthY = (branch.top.y - branch.base.y)/2;
 
-		glm::vec3 topTip(lengthX, lengthY, 0.f); // Vertice of the tip of the top branch
-		Tree topBranch(branch.top, topTip, branch.colour); // Create top branch
+		glm::vec3 topTip(branch.top.x + lengthX, branch.top.y + lengthY, 0.f); // Vertice of the tip of the top branch
+		glm::vec3 topConnect(branch.top); // Vertice that connects top branch to tree
+		Tree topBranch(topConnect, topTip, branch.colour); // Create top branch
 
 		treeCreate(topBranch, iteration - 1, cpuGeom);
 
-
-
 	}
+	
 
 	// Add vertices to vertice vector
 	cpuGeom.verts.push_back(branch.base); // Left point
