@@ -11,6 +11,7 @@
 #include "Window.h"
 #include "AssetPath.h"
 
+
 class SierpinskiTriangle {
 public:
 	// Triangle vertices
@@ -21,14 +22,13 @@ public:
 	// Triangle colour
 	glm::vec3 colour;
 
+	// Triangle constructor
 	SierpinskiTriangle(glm::vec3 x, glm::vec3 y, glm::vec3 z, glm::vec3 newColour) {
 
-		// vertices (initial triangle)
 		A = x;
 		B = y;
 		C = z;
 
-		// Initial triangle colour
 		colour = newColour;
 
 	}
@@ -36,13 +36,15 @@ public:
 
 class LevyCCurve {
 public:
+	// Line verticles
 	glm::vec3 A;
 	glm::vec3 B;
 
+	// Colours
 	glm::vec3 colourA;
 	glm::vec3 colourB;
 
-
+	// Line constructor for C Curve
 	LevyCCurve(glm::vec3 x, glm::vec3 y, glm::vec3 colourLeft, glm::vec3 colourRight) {
 		A = x;
 		B = y;
@@ -52,9 +54,27 @@ public:
 	}
 };
 
+class Tree {
+public:
 
+	glm::vec3 base; // base of branch/leaf
+	glm::vec3 top; // tip of branch/leaf
+
+	glm::vec3 colour;
+
+	// Tree branch/leaf constructor
+	Tree(glm::vec3 base, glm::vec3 top, glm::vec3 colour) {
+		this->base = base;
+		this->top = top;
+
+		this->colour = colour;
+	}
+};
+
+// Function prototypes
 void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration, int totalIterations, CPU_Geometry& cpuGeom);
 void levyCCurveCreate(LevyCCurve curve, int iteration, int totalIterations, CPU_Geometry& cpuGeom);
+void treeCreate(Tree branch, int iteration, int iterationCounter, CPU_Geometry& cpuGeom);
 
 
 // EXAMPLE CALLBACKS
@@ -65,9 +85,7 @@ public:
 
 	virtual void keyCallback(int key, int scancode, int action, int mods) {
 		
-		if (key == GLFW_KEY_R && action == GLFW_PRESS) { // On a positive edge press (when FIRST clicked)
-			shader.recompile();
-		}
+		
 	}
 
 
@@ -75,33 +93,42 @@ public:
 	//virtual void mouseButtonCallback(int button, int action, int mods) {}
 	//virtual void cursorPosCallback(double xpos, double ypos) {}
 	//virtual void scrollCallback(double xoffset, double yoffset) {}
-	virtual void windowSizeCallback(int width, int height) { CallbackInterface::windowSizeCallback(width, height);/*Should be called*/ }
+	//virtual void windowSizeCallback(int width, int height) { CallbackInterface::windowSizeCallback(width, height);/*Should be called*/ }
 
 private:
 	ShaderProgram& shader;
 };
 
-// Increase/decrease iteration with right and left arrow keys respectively
+// END EXAMPLES
+
+// Callbacks
 class MyCallbacks : public CallbackInterface {
 
 public:
 	MyCallbacks(int& iteration, int& sceneNumber) : iteration(iteration), sceneNumber(sceneNumber) {}
 
+	// Increase and decrease scene and iteratios with arrow keys
 	virtual void keyCallback(int key, int scancode, int action, int mods) {
+		// Right arrow key increases iteration
 		if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS) {
 			iteration++;
 			std::cout << "Iteration num: " << iteration << std::endl;
 		}
+		// Left arrow key decreases iteration
 		if (key == GLFW_KEY_LEFT && action == GLFW_PRESS) {
 			if (iteration > 0) {
 				iteration--;
 			}
 			std::cout << "Iteration num: " << iteration << std::endl;
 		}
+		// Up arrow key switches to next scene
 		if (key == GLFW_KEY_UP && action == GLFW_PRESS) {
-			sceneNumber++;
-			std::cout << "Scene num: " << sceneNumber << std::endl;
+			if (sceneNumber < 2) {
+				sceneNumber++;
+				std::cout << "Scene num: " << sceneNumber << std::endl;
+			}		
 		}
+		// Down arrow key switches to previous scene
 		if (key == GLFW_KEY_DOWN && action == GLFW_PRESS) {
 			if (sceneNumber > 0) {
 				sceneNumber--;
@@ -109,6 +136,7 @@ public:
 			std::cout << "Scene num: " << sceneNumber << std::endl;
 		}
 	}
+
 private:
 	int& iteration;
 	int& sceneNumber;
@@ -116,7 +144,6 @@ private:
 };
 
 
-// END EXAMPLES
 
 int main() {
 
@@ -126,7 +153,7 @@ int main() {
 	glfwInit();//MUST call this first to set up environment (There is a terminate pair after the loop)
 	Window window(800, 800, "CPSC 453 Assignment 1: Fractals"); // Can set callbacks at construction if desired
 
-	GLDebug::enable(); // ON Submission you may comments this out to avoid unnecessary prints to the console
+	//GLDebug::enable(); // ON Submission you may comments this out to avoid unnecessary prints to the console
 
 	// SHADERS
 	ShaderProgram shader(
@@ -164,6 +191,12 @@ int main() {
 	glm::vec3 colourRight(0.f, 0.f, 1.f );
 	LevyCCurve line(ver4, ver5, colourLeft, colourRight);
 
+	// Initial tree trunk
+	glm::vec3 trunkBase(0.f, -0.85f, 0.f);
+	glm::vec3 trunkTop(0.f, 0.f, 0.f);
+
+	glm::vec3 branchColour(.25f, .18f, .1f);
+	Tree tree(trunkBase, trunkTop, branchColour);
 
 
 	// RENDER LOOP
@@ -175,6 +208,7 @@ int main() {
 		cpuGeom.verts.clear();
 		cpuGeom.cols.clear();
 
+		// Scene 0: Sierpinski Triangle
 		if (sceneNumber == 0) {
 			int totalIterations = iteration;
 			sierpinskiTriangleCreate(triangle, iteration, totalIterations, cpuGeom);
@@ -186,43 +220,66 @@ int main() {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear render screen (all zero) and depth (all max depth)
 			glDrawArrays(GL_TRIANGLES, 0, cpuGeom.verts.size()); // Render primitives
 			glDisable(GL_FRAMEBUFFER_SRGB); // disable sRGB for things like imgui (if used)
+
 		}
 
+		// Scene 1: Levy C Curve
 		else if (sceneNumber == 1) {
-			int totalIterations = iteration * 2; // Total number of iterations in one curve
+			int totalIterations = iteration * 2; // TNumber of iterations in one curve
 			levyCCurveCreate(line, iteration, totalIterations, cpuGeom);
 			gpuGeom.setVerts(cpuGeom.verts); // Upload vertex position geometry to VBO
 			gpuGeom.setCols(cpuGeom.cols); // Upload vertex colour attribute to VBO
 			
-			glEnable(GL_FRAMEBUFFER_SRGB); // Expect Colour to be encoded in sRGB standard (as opposed to RGB) 
-			// https://www.viewsonic.com/library/creative-work/srgb-vs-adobe-rgb-which-one-to-use/
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear render screen (all zero) and depth (all max depth)
-			glDrawArrays(GL_LINES, 0, cpuGeom.verts.size()); // Render primitives
-			glDisable(GL_FRAMEBUFFER_SRGB); // disable sRGB for things like imgui (if used)
-
+			glEnable(GL_FRAMEBUFFER_SRGB); 
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
+			glDrawArrays(GL_LINES, 0, cpuGeom.verts.size()); 
+			glDisable(GL_FRAMEBUFFER_SRGB); 
 		}
 		
+		// Scene 3: Tree
+		else if (sceneNumber == 2) {
+			int iterationCounter = 0;
+			treeCreate(tree, iteration, iterationCounter, cpuGeom);
+			gpuGeom.setVerts(cpuGeom.verts); // Upload vertex position geometry to VBO
+			gpuGeom.setCols(cpuGeom.cols); // Upload vertex colour attribute to VBO
+
+			glEnable(GL_FRAMEBUFFER_SRGB); 
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
+			glDrawArrays(GL_LINES, 0, cpuGeom.verts.size()); 
+			glDisable(GL_FRAMEBUFFER_SRGB); 
+		}		
 
 		window.swapBuffers(); //Swap the buffers while displaying the previous 	
 	}
+
 	glfwTerminate(); // Clean up GLFW
 	return 0;
 }
 
 
+/*
+* Creates vertices and colours for Sierpinski Triangle and adds them to the vertex and colour vectors
+* 
+* @param triangle	Triangle from previous iteration
+* @param iteration	Number of iterations to generate
+* @param totalIterations	Number of iterations to be generated in total
+* @param cpuGeom	Collection of vectors for geometry
+* 
+*/
 void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration, int totalIterations, CPU_Geometry & cpuGeom) {
 	
 	if (iteration > 0) {
+		// New vertices from midpoins of triangle sides
 		glm::vec3 D(0.5f * (triangle.A + triangle.C));
 		glm::vec3 E(0.5f * (triangle.C + triangle.B));
 		glm::vec3 F(0.5f * (triangle.B + triangle.A));
 		
-		float increment = (static_cast<float>(iteration) / totalIterations) * 0.33f;
-		glm::vec3	leftColour = { triangle.colour.x, triangle.colour.y, triangle.colour.z + increment};
-		glm::vec3	rightColour = { triangle.colour.x, triangle.colour.y, triangle.colour.z - increment };
-		glm::vec3	topColour = { triangle.colour.x, triangle.colour.y - increment, triangle.colour.z};
+		float increment = (static_cast<float>(iteration) / totalIterations) * 0.33f; // Colour incremented based on iterations
+		glm::vec3	leftColour = { triangle.colour.x, triangle.colour.y, triangle.colour.z + increment}; // increase blue
+		glm::vec3	rightColour = { triangle.colour.x, triangle.colour.y, triangle.colour.z - increment }; // decrease blue 
+		glm::vec3	topColour = { triangle.colour.x, triangle.colour.y - increment, triangle.colour.z}; // decrease green
 	
-	
+		// Create new trianges using new vertices and vertices of previous triangles
 		SierpinskiTriangle topTriangle(D, E, triangle.C, topColour);
 		SierpinskiTriangle rightTriangle(triangle.A, F, D, rightColour);
 		SierpinskiTriangle leftTriangle(F, triangle.B, E, leftColour);
@@ -246,27 +303,39 @@ void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration, int to
 	}
 }
 
-
+/*
+* Creates vertices and colours for Levy C Curve and adds them to the vertex and colour vectors
+*
+* @param line	Line from previous iteration
+* @param iteration	Number of iterations to generate
+* @param totalIterations	Number of iterations to be generated in total
+* @param cpuGeom	Collection of vectors for geometry
+*
+*/
 void levyCCurveCreate(LevyCCurve line, int iteration, int totalIterations, CPU_Geometry& cpuGeom) {
 	if (iteration > 0) {
 
-		// Get midpoint of line
+		// Get size of lines
 		float lengthX = line.B.x - line.A.x;
 		float lengthY = line.B.y - line.A.y;
+		// Add size of lines to point A
 		float newX = line.A.x + (lengthX / 2) - (lengthY / 2);
 		float newY = line.A.y + (lengthY / 2) + (lengthX / 2);
-		glm::vec3 C(newX, newY, 0.f);
+		glm::vec3 C(newX, newY, 0.f); // Create new vertex C 
+		
 
+		// Normalize iteration range so that each iteration has a value between 0 and 1
 		float colourMidpoint = (static_cast<float>(totalIterations) - iteration) / totalIterations; // Cast to avoid improper truncate
 
+		// Mix blue and green using colourMidpoint interpolant
 		glm::vec3 colourC = glm::mix(line.colourA, line.colourB, colourMidpoint);
 
+		// Create two new lines meeting at vertex C
 		LevyCCurve leftLine(line.A, C, line.colourA, colourC);
 		LevyCCurve rightLine(C, line.B, colourC, line.colourB);
 
 		levyCCurveCreate(leftLine, iteration - 1,totalIterations, cpuGeom);
 		levyCCurveCreate(rightLine, iteration - 1, totalIterations, cpuGeom);
-
 	}
 
 	else {
@@ -278,7 +347,69 @@ void levyCCurveCreate(LevyCCurve line, int iteration, int totalIterations, CPU_G
 		cpuGeom.cols.push_back(glm::vec3(line.colourA));
 		cpuGeom.cols.push_back(glm::vec3(line.colourB));
 	}
+
+}
+
+/*
+* Creates vertices and colours for Tree scene and adds them to the vertex and colour vectors
+*
+* @param branch		branch (or leaf) from previous iteration
+* @param iteration	Number of iterations to generate
+* @param iterationCounter	tracks number of iterations completed to detect when to start creating leaves
+* @param cpuGeom	Collection of vectors for geometry
+*
+*/
+void treeCreate(Tree branch, int iteration, int iterationCounter, CPU_Geometry& cpuGeom) {
+	glm::vec3 colour;
+	if (iteration > 0) {
+		iterationCounter++;
+
+		// Change to colour to leaf colour if past iteration 3
+		if (iterationCounter > 3) {
+			glm::vec3 leaves(0.1f, 0.4f, 0.f);
+			colour = leaves;
+		}
+		else (colour = branch.colour);
+
+		// Make new branch 1/2 the size of the previous
+		float lengthX = (branch.top.x - branch.base.x)/2;
+		float lengthY = (branch.top.y - branch.base.y)/2;
+
+		glm::vec3 topTip(branch.top.x + lengthX, branch.top.y + lengthY, 0.f); // Vertice of the tip of the top branch
+		glm::vec3 topConnect(branch.top); // Vertice that connects top branch to tree
+		Tree topBranch(topConnect, topTip, colour); // Create top branch
+		treeCreate(topBranch, iteration - 1, iterationCounter, cpuGeom);
+
+		
+		glm::vec3 midpoint((branch.base + branch.top) * .5f); // connecting point to trunk
+		glm::vec dirVec(branch.top - branch.base); // direction vector
+
+		// Make new branch 1/2 the size of the previous and rotated +25.7 degrees (left)
+		glm::mat4 rotate(glm::rotate(glm::mat4(1.0f), glm::radians(25.7f), glm::vec3(0.f, 0.f, 1.f))); // rotation matrix
+		glm::vec3 leftBranchTip(glm::vec3(rotate * glm::vec4(dirVec, 1.f)) * 0.5f); // left branch rotated and half the length of previous branch
+		leftBranchTip += midpoint; // translate to middle of previous branch
+
+		Tree leftBranch(midpoint, leftBranchTip, colour);
+		treeCreate(leftBranch, iteration - 1, iterationCounter, cpuGeom);
+
+
+		// Make new branch 1/2 the size of the previous and rotated -25.7 degrees (right)
+		rotate = (glm::rotate(glm::mat4(1.0f), glm::radians(-25.7f), glm::vec3(0.f, 0.f, 1.f))); // rotation matrix
+		glm::vec3 rightBranchTip(glm::vec3(rotate * glm::vec4(dirVec, 1.f)) * 0.5f); // right branch rotated and half the length of previous branch
+		rightBranchTip += midpoint; // translate to midpoint of previous branch
+
+		Tree rightBranch(midpoint, rightBranchTip, colour);
+		treeCreate(rightBranch, iteration - 1, iterationCounter, cpuGeom);
+
+	}
 	
-	
+
+	// Add vertices to vertice vector
+	cpuGeom.verts.push_back(branch.base); // Left point
+	cpuGeom.verts.push_back(branch.top); // Right point
+
+	// Add colours to colour vector
+	cpuGeom.cols.push_back(glm::vec3(branch.colour));
+	cpuGeom.cols.push_back(glm::vec3(branch.colour));
 
 }
