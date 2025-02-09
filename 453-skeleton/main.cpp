@@ -70,7 +70,7 @@ public:
 
 void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration, int totalIterations, CPU_Geometry& cpuGeom);
 void levyCCurveCreate(LevyCCurve curve, int iteration, int totalIterations, CPU_Geometry& cpuGeom);
-void treeCreate(Tree branch, int iteration, CPU_Geometry& cpuGeom);
+void treeCreate(Tree branch, int iteration, int iterationCounter, CPU_Geometry& cpuGeom);
 
 
 // EXAMPLE CALLBACKS
@@ -228,8 +228,8 @@ int main() {
 		}
 		
 		else if (sceneNumber == 2) {
-		
-			treeCreate(tree, iteration, cpuGeom);
+			int iterationCounter = 0;
+			treeCreate(tree, iteration, iterationCounter, cpuGeom);
 			gpuGeom.setVerts(cpuGeom.verts); // Upload vertex position geometry to VBO
 			gpuGeom.setCols(cpuGeom.cols); // Upload vertex colour attribute to VBO
 
@@ -321,17 +321,24 @@ void levyCCurveCreate(LevyCCurve line, int iteration, int totalIterations, CPU_G
 
 }
 
-void treeCreate(Tree branch, int iteration, CPU_Geometry& cpuGeom) {
-
+void treeCreate(Tree branch, int iteration, int iterationCounter, CPU_Geometry& cpuGeom) {
+	glm::vec3 colour;
 	if (iteration > 0) {
+		iterationCounter++;
+		if (iterationCounter > 3) {
+			glm::vec3 leaves(0.1f, 0.4f, 0.f);
+			colour = leaves;
+		}
+		else (colour = branch.colour);
+
 		// Make new branch 1/2 the size of the previous
 		float lengthX = (branch.top.x - branch.base.x)/2;
 		float lengthY = (branch.top.y - branch.base.y)/2;
 
 		glm::vec3 topTip(branch.top.x + lengthX, branch.top.y + lengthY, 0.f); // Vertice of the tip of the top branch
 		glm::vec3 topConnect(branch.top); // Vertice that connects top branch to tree
-		Tree topBranch(topConnect, topTip, branch.colour); // Create top branch
-		treeCreate(topBranch, iteration - 1, cpuGeom);
+		Tree topBranch(topConnect, topTip, colour); // Create top branch
+		treeCreate(topBranch, iteration - 1, iterationCounter, cpuGeom);
 
 		
 		glm::vec3 midpoint((branch.base + branch.top) * .5f); // connecting point to trunk
@@ -342,8 +349,8 @@ void treeCreate(Tree branch, int iteration, CPU_Geometry& cpuGeom) {
 		glm::vec3 leftBranchTip(glm::vec3(rotate * glm::vec4(dirVec, 1.f)) * 0.5f); // left branch rotated and half the length of previous branch
 		leftBranchTip += midpoint; // translate to middle of previous branch
 
-		Tree leftBranch(midpoint, leftBranchTip, branch.colour);
-		treeCreate(leftBranch, iteration - 1, cpuGeom);
+		Tree leftBranch(midpoint, leftBranchTip, colour);
+		treeCreate(leftBranch, iteration - 1, iterationCounter, cpuGeom);
 
 
 		// Make new branch 1/2 the size of the previous and rotated -25.7 degrees (right)
@@ -351,8 +358,8 @@ void treeCreate(Tree branch, int iteration, CPU_Geometry& cpuGeom) {
 		glm::vec3 rightBranchTip(glm::vec3(rotate * glm::vec4(dirVec, 1.f)) * 0.5f); // right branch rotated and half the length of previous branch
 		rightBranchTip += midpoint; // translate to midpoint of previous branch
 
-		Tree rightBranch(midpoint, rightBranchTip, branch.colour);
-		treeCreate(rightBranch, iteration - 1, cpuGeom);
+		Tree rightBranch(midpoint, rightBranchTip, colour);
+		treeCreate(rightBranch, iteration - 1, iterationCounter, cpuGeom);
 
 	}
 	
