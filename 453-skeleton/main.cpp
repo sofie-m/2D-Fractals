@@ -346,6 +346,14 @@ void treeCreate(Tree branch, int iteration, CPU_Geometry& cpuGeom) {
 		treeCreate(leftBranch, iteration - 1, cpuGeom);
 
 
+		// Make new branch 1/2 the size of the previous and rotated -25.7 degrees (right)
+		rotate = (glm::rotate(glm::mat4(1.0f), glm::radians(-25.7f), glm::vec3(0.f, 0.f, 1.f))); // rotation matrix
+		glm::vec3 rightBranchTip(glm::vec3(rotate * glm::vec4(dirVec, 1.f)) * 0.5f); // right branch rotated and half the length of previous branch
+		rightBranchTip += midpoint; // translate to midpoint of previous branch
+
+		Tree rightBranch(midpoint, rightBranchTip, branch.colour);
+		treeCreate(rightBranch, iteration - 1, cpuGeom);
+
 	}
 	
 
