@@ -85,35 +85,32 @@ public:
 
 	// Increase and decrease scene and iteratios with arrow keys
 	virtual void keyCallback(int key, int scancode, int action, int mods) {
-		// Right arrow key increases iteration
-		if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS) {
+
+		// Up arrow key increases iteration
+		if (key == GLFW_KEY_UP && action == GLFW_PRESS) {
 			
 			if (iteration < maxIterations) {
 				iteration++;
-				std::cout << "Iteration num: " << iteration << std::endl;
 			}
 		}
 
-		// Left arrow key decreases iteration
-		if (key == GLFW_KEY_LEFT && action == GLFW_PRESS) {
+		// Down arrow key decreases iteration
+		if (key == GLFW_KEY_DOWN && action == GLFW_PRESS) {
 			if (iteration > 0) {
 				iteration--;
 			}
-			std::cout << "Iteration num: " << iteration << std::endl;
 		}
-		// Up arrow key switches to next scene
-		if (key == GLFW_KEY_UP && action == GLFW_PRESS) {
+		// Right arrow key switches to next scene
+		if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS) {
 			if (sceneNumber < 2) {
 				sceneNumber++;
-				std::cout << "Scene num: " << sceneNumber << std::endl;
 			}		
 		}
-		// Down arrow key switches to previous scene
-		if (key == GLFW_KEY_DOWN && action == GLFW_PRESS) {
+		// Left arrow key switches to previous scene
+		if (key == GLFW_KEY_LEFT && action == GLFW_PRESS) {
 			if (sceneNumber > 0) {
 				sceneNumber--;
 			}
-			std::cout << "Scene num: " << sceneNumber << std::endl;
 		}
 	}
 
