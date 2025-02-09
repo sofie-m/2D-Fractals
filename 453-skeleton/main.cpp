@@ -53,7 +53,7 @@ public:
 };
 
 
-void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration,bool setColour, CPU_Geometry& cpuGeom);
+void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration, int totalIterations, CPU_Geometry& cpuGeom);
 void levyCCurveCreate(LevyCCurve curve, int iteration, int totalIterations, CPU_Geometry& cpuGeom);
 
 
@@ -152,10 +152,9 @@ int main() {
 	glm::vec3 ver3(0.f, float(sqrt(27)) / 8, 0.f);
 
 	// Initial triangle colour
-	glm::vec3 colourInit(0.5f, 0.5f, 1.f );
+	glm::vec3 colourInit(1.f, 0.7f, .5f );
 
 	SierpinskiTriangle triangle(ver1, ver2, ver3, colourInit);
-	bool setColour = false;
 
 	// vertices (initial line of Levy C Curve)
 	glm::vec3 ver4(- 0.5f, -0.3f, 0.f);
@@ -177,7 +176,8 @@ int main() {
 		cpuGeom.cols.clear();
 
 		if (sceneNumber == 0) {
-			sierpinskiTriangleCreate(triangle, iteration, setColour, cpuGeom);
+			int totalIterations = iteration;
+			sierpinskiTriangleCreate(triangle, iteration, totalIterations, cpuGeom);
 			gpuGeom.setVerts(cpuGeom.verts); // Upload vertex position geometry to VBO
 			gpuGeom.setCols(cpuGeom.cols); // Upload vertex colour attribute to VBO
 
@@ -210,35 +210,26 @@ int main() {
 }
 
 
-void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration, bool setColour, CPU_Geometry & cpuGeom) {
+void sierpinskiTriangleCreate(SierpinskiTriangle triangle, int iteration, int totalIterations, CPU_Geometry & cpuGeom) {
 	
 	if (iteration > 0) {
 		glm::vec3 D(0.5f * (triangle.A + triangle.C));
 		glm::vec3 E(0.5f * (triangle.C + triangle.B));
 		glm::vec3 F(0.5f * (triangle.B + triangle.A));
 		
-		glm::vec3 topColour; // Purple 
-		glm::vec3 leftColour; // Pink 
-		glm::vec3 rightColour; // Red
-
-		if (!setColour) {
-			topColour = triangle.colour; 
-			leftColour = { 1.f, 0.5f, 1.f };
-			rightColour = { 1.f, 0.5f, 0.5f }; 
-		}
-		else {
-			leftColour = { triangle.colour.x, triangle.colour.y, triangle.colour.z + .1f}; // Increase pink
-			rightColour = { triangle.colour.x, triangle.colour.y - .1f, triangle.colour.z - .1f }; // Increase red
-			topColour = { triangle.colour.x - .1f, triangle.colour.y, triangle.colour.z + .1f}; // Increase purple
-		}
-
+		float increment = (static_cast<float>(iteration) / totalIterations) * 0.33f;
+		glm::vec3	leftColour = { triangle.colour.x, triangle.colour.y, triangle.colour.z + increment};
+		glm::vec3	rightColour = { triangle.colour.x, triangle.colour.y, triangle.colour.z - increment };
+		glm::vec3	topColour = { triangle.colour.x, triangle.colour.y - increment, triangle.colour.z};
+	
+	
 		SierpinskiTriangle topTriangle(D, E, triangle.C, topColour);
 		SierpinskiTriangle rightTriangle(triangle.A, F, D, rightColour);
 		SierpinskiTriangle leftTriangle(F, triangle.B, E, leftColour);
 
-		sierpinskiTriangleCreate(topTriangle, iteration - 1, true, cpuGeom);
-		sierpinskiTriangleCreate(leftTriangle, iteration - 1, true, cpuGeom);
-		sierpinskiTriangleCreate(rightTriangle, iteration - 1, true, cpuGeom);
+		sierpinskiTriangleCreate(topTriangle, iteration - 1, totalIterations, cpuGeom);
+		sierpinskiTriangleCreate(leftTriangle, iteration - 1, totalIterations, cpuGeom);
+		sierpinskiTriangleCreate(rightTriangle, iteration - 1, totalIterations, cpuGeom);
 
 		
 	}
